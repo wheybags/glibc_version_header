@@ -1,0 +1,30 @@
+diff --git a/configure b/configure
+index 999a448a05..76123f7926 100755
+--- a/configure
++++ b/configure
+@@ -5049,9 +5049,9 @@ $as_echo_n "checking version of $CC... " >&6; }
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_prog_version" >&5
+ $as_echo "$ac_prog_version" >&6; }
+ fi
+-if test $ac_verc_fail = yes; then
+-  critic_missing="$critic_missing gcc"
+-fi
++#if test $ac_verc_fail = yes; then
++  #critic_missing="$critic_missing gcc"
++#fi
+ 
+ for ac_prog in gnumake gmake make
+ do
+@@ -5112,9 +5112,9 @@ $as_echo_n "checking version of $MAKE... " >&6; }
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_prog_version" >&5
+ $as_echo "$ac_prog_version" >&6; }
+ fi
+-if test $ac_verc_fail = yes; then
+-  critic_missing="$critic_missing make"
+-fi
++#if test $ac_verc_fail = yes; then
++#  critic_missing="$critic_missing make"
++#fi
+ 
+ 
+ for ac_prog in gnumsgfmt gmsgfmt msgfmt
