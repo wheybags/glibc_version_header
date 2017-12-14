@@ -1,4 +1,4 @@
-#ifndef SET_GLIBC_LINK_VERSIONS_HEADER
+#if !defined(SET_GLIBC_LINK_VERSIONS_HEADER) && !defined(__ASSEMBLER__)
 #define SET_GLIBC_LINK_VERSIONS_HEADER
 __asm__(".symver _Exit,_Exit@GLIBC_2.2.5");
 __asm__(".symver _IO_2_1_stderr_,_IO_2_1_stderr_@GLIBC_2.2.5");
@@ -520,7 +520,11 @@ __asm__(".symver __progname,__progname@GLIBC_2.2.5");
 __asm__(".symver __progname_full,__progname_full@GLIBC_2.2.5");
 __asm__(".symver __pthread_cleanup_routine,__pthread_cleanup_routine@GLIBC_2.3.3");
 __asm__(".symver __pthread_getspecific,__pthread_getspecific@GLIBC_2.2.5");
+#ifndef _GLIBCXX_SHARED
+#ifndef IN_LIBGCC2
 __asm__(".symver __pthread_key_create,__pthread_key_create@GLIBC_2.2.5");
+#endif
+#endif
 __asm__(".symver __pthread_mutex_destroy,__pthread_mutex_destroy@GLIBC_2.2.5");
 __asm__(".symver __pthread_mutex_init,__pthread_mutex_init@GLIBC_2.2.5");
 __asm__(".symver __pthread_mutex_lock,__pthread_mutex_lock@GLIBC_2.2.5");
@@ -557,7 +561,9 @@ __asm__(".symver __realloc_hook,__realloc_hook@GLIBC_2.2.5");
 __asm__(".symver __realpath_chk,__realpath_chk@GLIBC_2.4");
 __asm__(".symver __recv_chk,__recv_chk@GLIBC_2.4");
 __asm__(".symver __recvfrom_chk,__recvfrom_chk@GLIBC_2.4");
+#ifndef _REENTRANT
 __asm__(".symver __register_atfork,__register_atfork@GLIBC_2.3.2");
+#endif
 __asm__(".symver __remainder_finite,__remainder_finite@GLIBC_2.15");
 __asm__(".symver __remainderf128_finite,__remainderf128_finite@GLIBC_2.26");
 __asm__(".symver __remainderf_finite,__remainderf_finite@GLIBC_2.15");
@@ -2057,25 +2063,49 @@ __asm__(".symver program_invocation_short_name,program_invocation_short_name@GLI
 __asm__(".symver pselect,pselect@GLIBC_2.2.5");
 __asm__(".symver psiginfo,psiginfo@GLIBC_2.10");
 __asm__(".symver psignal,psignal@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_destroy,pthread_attr_destroy@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_attr_getaffinity_np,pthread_attr_getaffinity_np@GLIBC_2.3.4");
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_getdetachstate,pthread_attr_getdetachstate@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_attr_getguardsize,pthread_attr_getguardsize@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_getinheritsched,pthread_attr_getinheritsched@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_getschedparam,pthread_attr_getschedparam@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_getschedpolicy,pthread_attr_getschedpolicy@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_getscope,pthread_attr_getscope@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_attr_getstack,pthread_attr_getstack@GLIBC_2.2.5");
 __asm__(".symver pthread_attr_getstackaddr,pthread_attr_getstackaddr@GLIBC_2.2.5");
 __asm__(".symver pthread_attr_getstacksize,pthread_attr_getstacksize@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_init,pthread_attr_init@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_attr_setaffinity_np,pthread_attr_setaffinity_np@GLIBC_2.3.4");
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_setdetachstate,pthread_attr_setdetachstate@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_attr_setguardsize,pthread_attr_setguardsize@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_setinheritsched,pthread_attr_setinheritsched@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_setschedparam,pthread_attr_setschedparam@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_setschedpolicy,pthread_attr_setschedpolicy@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_attr_setscope,pthread_attr_setscope@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_attr_setstack,pthread_attr_setstack@GLIBC_2.2.5");
 __asm__(".symver pthread_attr_setstackaddr,pthread_attr_setstackaddr@GLIBC_2.2.5");
 __asm__(".symver pthread_attr_setstacksize,pthread_attr_setstacksize@GLIBC_2.2.5");
@@ -2087,44 +2117,86 @@ __asm__(".symver pthread_barrierattr_getpshared,pthread_barrierattr_getpshared@G
 __asm__(".symver pthread_barrierattr_init,pthread_barrierattr_init@GLIBC_2.2.5");
 __asm__(".symver pthread_barrierattr_setpshared,pthread_barrierattr_setpshared@GLIBC_2.2.5");
 __asm__(".symver pthread_cancel,pthread_cancel@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_cond_broadcast,pthread_cond_broadcast@GLIBC_2.3.2");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_cond_destroy,pthread_cond_destroy@GLIBC_2.3.2");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_cond_init,pthread_cond_init@GLIBC_2.3.2");
+#endif
 __asm__(".symver pthread_cond_signal,pthread_cond_signal@GLIBC_2.3.2");
+#ifndef _REENTRANT
 __asm__(".symver pthread_cond_timedwait,pthread_cond_timedwait@GLIBC_2.3.2");
+#endif
 __asm__(".symver pthread_cond_wait,pthread_cond_wait@GLIBC_2.3.2");
+#ifndef _REENTRANT
 __asm__(".symver pthread_condattr_destroy,pthread_condattr_destroy@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_condattr_getclock,pthread_condattr_getclock@GLIBC_2.3.3");
 __asm__(".symver pthread_condattr_getpshared,pthread_condattr_getpshared@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_condattr_init,pthread_condattr_init@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_condattr_setclock,pthread_condattr_setclock@GLIBC_2.3.3");
 __asm__(".symver pthread_condattr_setpshared,pthread_condattr_setpshared@GLIBC_2.2.5");
+#ifndef _GLIBCXX_SHARED
 __asm__(".symver pthread_create,pthread_create@GLIBC_2.2.5");
+#endif
+#ifndef _GLIBCXX_SHARED
 __asm__(".symver pthread_detach,pthread_detach@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_equal,pthread_equal@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_exit,pthread_exit@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_getaffinity_np,pthread_getaffinity_np@GLIBC_2.3.4");
 __asm__(".symver pthread_getattr_default_np,pthread_getattr_default_np@GLIBC_2.18");
 __asm__(".symver pthread_getattr_np,pthread_getattr_np@GLIBC_2.2.5");
 __asm__(".symver pthread_getconcurrency,pthread_getconcurrency@GLIBC_2.2.5");
 __asm__(".symver pthread_getcpuclockid,pthread_getcpuclockid@GLIBC_2.2.5");
 __asm__(".symver pthread_getname_np,pthread_getname_np@GLIBC_2.12");
+#ifndef _REENTRANT
 __asm__(".symver pthread_getschedparam,pthread_getschedparam@GLIBC_2.2.5");
+#endif
+#ifndef _GLIBCXX_SHARED
+#ifndef IN_LIBGCC2
 __asm__(".symver pthread_getspecific,pthread_getspecific@GLIBC_2.2.5");
+#endif
+#endif
+#ifndef _GLIBCXX_SHARED
 __asm__(".symver pthread_join,pthread_join@GLIBC_2.2.5");
+#endif
+#ifndef _GLIBCXX_SHARED
+#ifndef IN_LIBGCC2
 __asm__(".symver pthread_key_create,pthread_key_create@GLIBC_2.2.5");
+#endif
+#endif
+#ifndef _GLIBCXX_SHARED
 __asm__(".symver pthread_key_delete,pthread_key_delete@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_kill,pthread_kill@GLIBC_2.2.5");
 __asm__(".symver pthread_mutex_consistent,pthread_mutex_consistent@GLIBC_2.12");
 __asm__(".symver pthread_mutex_consistent_np,pthread_mutex_consistent_np@GLIBC_2.4");
+#ifndef _REENTRANT
 __asm__(".symver pthread_mutex_destroy,pthread_mutex_destroy@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_mutex_getprioceiling,pthread_mutex_getprioceiling@GLIBC_2.4");
+#ifndef _REENTRANT
 __asm__(".symver pthread_mutex_init,pthread_mutex_init@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_mutex_lock,pthread_mutex_lock@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_mutex_setprioceiling,pthread_mutex_setprioceiling@GLIBC_2.4");
 __asm__(".symver pthread_mutex_timedlock,pthread_mutex_timedlock@GLIBC_2.2.5");
 __asm__(".symver pthread_mutex_trylock,pthread_mutex_trylock@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_mutex_unlock,pthread_mutex_unlock@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_mutexattr_destroy,pthread_mutexattr_destroy@GLIBC_2.2.5");
 __asm__(".symver pthread_mutexattr_getkind_np,pthread_mutexattr_getkind_np@GLIBC_2.2.5");
 __asm__(".symver pthread_mutexattr_getprioceiling,pthread_mutexattr_getprioceiling@GLIBC_2.4");
@@ -2141,7 +2213,11 @@ __asm__(".symver pthread_mutexattr_setpshared,pthread_mutexattr_setpshared@GLIBC
 __asm__(".symver pthread_mutexattr_setrobust,pthread_mutexattr_setrobust@GLIBC_2.12");
 __asm__(".symver pthread_mutexattr_setrobust_np,pthread_mutexattr_setrobust_np@GLIBC_2.4");
 __asm__(".symver pthread_mutexattr_settype,pthread_mutexattr_settype@GLIBC_2.2.5");
+#ifndef _GLIBCXX_SHARED
+#ifndef IN_LIBGCC2
 __asm__(".symver pthread_once,pthread_once@GLIBC_2.2.5");
+#endif
+#endif
 __asm__(".symver pthread_rwlock_destroy,pthread_rwlock_destroy@GLIBC_2.2.5");
 __asm__(".symver pthread_rwlock_init,pthread_rwlock_init@GLIBC_2.2.5");
 __asm__(".symver pthread_rwlock_rdlock,pthread_rwlock_rdlock@GLIBC_2.2.5");
@@ -2157,16 +2233,28 @@ __asm__(".symver pthread_rwlockattr_getpshared,pthread_rwlockattr_getpshared@GLI
 __asm__(".symver pthread_rwlockattr_init,pthread_rwlockattr_init@GLIBC_2.2.5");
 __asm__(".symver pthread_rwlockattr_setkind_np,pthread_rwlockattr_setkind_np@GLIBC_2.2.5");
 __asm__(".symver pthread_rwlockattr_setpshared,pthread_rwlockattr_setpshared@GLIBC_2.2.5");
+#ifndef _REENTRANT
 __asm__(".symver pthread_self,pthread_self@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_setaffinity_np,pthread_setaffinity_np@GLIBC_2.3.4");
 __asm__(".symver pthread_setattr_default_np,pthread_setattr_default_np@GLIBC_2.18");
+#ifndef _REENTRANT
 __asm__(".symver pthread_setcancelstate,pthread_setcancelstate@GLIBC_2.2.5");
+#endif
+#ifndef _REENTRANT
 __asm__(".symver pthread_setcanceltype,pthread_setcanceltype@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_setconcurrency,pthread_setconcurrency@GLIBC_2.2.5");
 __asm__(".symver pthread_setname_np,pthread_setname_np@GLIBC_2.12");
+#ifndef _REENTRANT
 __asm__(".symver pthread_setschedparam,pthread_setschedparam@GLIBC_2.2.5");
+#endif
 __asm__(".symver pthread_setschedprio,pthread_setschedprio@GLIBC_2.3.4");
+#ifndef _GLIBCXX_SHARED
+#ifndef IN_LIBGCC2
 __asm__(".symver pthread_setspecific,pthread_setspecific@GLIBC_2.2.5");
+#endif
+#endif
 __asm__(".symver pthread_sigmask,pthread_sigmask@GLIBC_2.2.5");
 __asm__(".symver pthread_sigqueue,pthread_sigqueue@GLIBC_2.11");
 __asm__(".symver pthread_spin_destroy,pthread_spin_destroy@GLIBC_2.2.5");
@@ -2902,4 +2990,276 @@ __asm__(".symver ynf,ynf@GLIBC_2.2.5");
 __asm__(".symver ynf128,ynf128@GLIBC_2.26");
 __asm__(".symver ynl,ynl@GLIBC_2.2.5");
 __asm__(".symver yp_maplist,yp_maplist@GLIBC_2.2.5");
+__asm__(".symver __free_fdresult,__free_fdresult@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __malloc_initialize_hook,__malloc_initialize_hook@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __mempcpy_small,__mempcpy_small@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nis_default_access,__nis_default_access@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nis_default_group,__nis_default_group@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nis_default_owner,__nis_default_owner@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nis_finddirectory,__nis_finddirectory@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nisbind_connect,__nisbind_connect@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nisbind_create,__nisbind_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nisbind_destroy,__nisbind_destroy@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __nisbind_next,__nisbind_next@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __rpc_thread_createerr,__rpc_thread_createerr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __rpc_thread_svc_fdset,__rpc_thread_svc_fdset@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __secure_getenv,__secure_getenv@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __sigaddset,__sigaddset@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __sigdelset,__sigdelset@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __sigismember,__sigismember@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __stpcpy_small,__stpcpy_small@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strcpy_small,__strcpy_small@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strcspn_c1,__strcspn_c1@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strcspn_c2,__strcspn_c2@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strcspn_c3,__strcspn_c3@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strpbrk_c2,__strpbrk_c2@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strpbrk_c3,__strpbrk_c3@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strsep_1c,__strsep_1c@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strsep_2c,__strsep_2c@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strsep_3c,__strsep_3c@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strspn_c1,__strspn_c1@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strspn_c2,__strspn_c2@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strspn_c3,__strspn_c3@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __strtok_r_1c,__strtok_r_1c@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver __yp_check,__yp_check@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _authenticate,_authenticate@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _gethtbyaddr,_gethtbyaddr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _gethtbyname,_gethtbyname@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _gethtbyname2,_gethtbyname2@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _gethtent,_gethtent@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _null_auth,_null_auth@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _rpc_dtablesize,_rpc_dtablesize@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _seterr_reply,_seterr_reply@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver _sethtent,_sethtent@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver advance,advance@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver authdes_getucred,authdes_getucred@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver authnone_create,authnone_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver authunix_create,authunix_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver bdflush,bdflush@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver callrpc,callrpc@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver cbc_crypt,cbc_crypt@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver cfree,cfree@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver clnt_broadcast,clnt_broadcast@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver clnt_perrno,clnt_perrno@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver clnt_spcreateerror,clnt_spcreateerror@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver clnt_sperror,clnt_sperror@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver clntraw_create,clntraw_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver clntudp_bufcreate,clntudp_bufcreate@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver clntunix_create,clntunix_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver create_module,create_module@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver des_setparity,des_setparity@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver ecb_crypt,ecb_crypt@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver get_kernel_syms,get_kernel_syms@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver getnetname,getnetname@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver getpublickey,getpublickey@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver getsecretkey,getsecretkey@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver key_decryptsession,key_decryptsession@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver key_decryptsession_pk,key_decryptsession_pk@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver key_encryptsession,key_encryptsession@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver key_encryptsession_pk,key_encryptsession_pk@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver key_get_conv,key_get_conv@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver key_setnet,key_setnet@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver key_setsecret,key_setsecret@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver loc1,loc1@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver loc2,loc2@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver locs,locs@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver malloc_get_state,malloc_get_state@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver malloc_set_state,malloc_set_state@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver netname2host,netname2host@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver netname2user,netname2user@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_add,nis_add@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_add_entry,nis_add_entry@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_addmember,nis_addmember@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_checkpoint,nis_checkpoint@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_clone_directory,nis_clone_directory@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_clone_object,nis_clone_object@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_clone_result,nis_clone_result@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_creategroup,nis_creategroup@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_destroy_object,nis_destroy_object@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_destroygroup,nis_destroygroup@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_dir_cmp,nis_dir_cmp@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_domain_of,nis_domain_of@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_domain_of_r,nis_domain_of_r@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_first_entry,nis_first_entry@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_free_directory,nis_free_directory@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_free_object,nis_free_object@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_free_request,nis_free_request@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_freenames,nis_freenames@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_freeresult,nis_freeresult@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_freeservlist,nis_freeservlist@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_freetags,nis_freetags@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_getnames,nis_getnames@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_getservlist,nis_getservlist@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_ismember,nis_ismember@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_leaf_of,nis_leaf_of@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_leaf_of_r,nis_leaf_of_r@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_lerror,nis_lerror@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_list,nis_list@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_local_directory,nis_local_directory@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_local_group,nis_local_group@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_local_host,nis_local_host@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_local_principal,nis_local_principal@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_lookup,nis_lookup@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_mkdir,nis_mkdir@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_modify,nis_modify@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_modify_entry,nis_modify_entry@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_name_of,nis_name_of@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_name_of_r,nis_name_of_r@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_next_entry,nis_next_entry@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_perror,nis_perror@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_ping,nis_ping@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_directory,nis_print_directory@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_entry,nis_print_entry@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_group,nis_print_group@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_group_entry,nis_print_group_entry@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_link,nis_print_link@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_object,nis_print_object@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_result,nis_print_result@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_rights,nis_print_rights@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_print_table,nis_print_table@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_read_obj,nis_read_obj@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_remove,nis_remove@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_remove_entry,nis_remove_entry@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_removemember,nis_removemember@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_rmdir,nis_rmdir@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_servstate,nis_servstate@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_sperrno,nis_sperrno@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_sperror,nis_sperror@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_sperror_r,nis_sperror_r@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_stats,nis_stats@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_verifygroup,nis_verifygroup@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver nis_write_obj,nis_write_obj@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver passwd2des,passwd2des@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver pmap_getmaps,pmap_getmaps@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver pmap_getport,pmap_getport@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver pmap_rmtcall,pmap_rmtcall@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver pmap_set,pmap_set@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver pmap_unset,pmap_unset@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver query_module,query_module@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver readColdStartFile,readColdStartFile@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver registerrpc,registerrpc@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver res_gethostbyaddr,res_gethostbyaddr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver res_gethostbyname,res_gethostbyname@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver res_gethostbyname2,res_gethostbyname2@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver res_send_setqhook,res_send_setqhook@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver res_send_setrhook,res_send_setrhook@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver rtime,rtime@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver sigvec,sigvec@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver step,step@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svc_exit,svc_exit@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svc_getreq,svc_getreq@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svc_getreq_common,svc_getreq_common@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svc_getreqset,svc_getreqset@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svc_run,svc_run@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svc_unregister,svc_unregister@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcerr_auth,svcerr_auth@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcerr_noprog,svcerr_noprog@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcerr_progvers,svcerr_progvers@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcerr_weakauth,svcerr_weakauth@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcfd_create,svcfd_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcraw_create,svcraw_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcudp_create,svcudp_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcudp_enablecache,svcudp_enablecache@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcunix_create,svcunix_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver svcunixfd_create,svcunixfd_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver uselib,uselib@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver user2netname,user2netname@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver writeColdStartFile,writeColdStartFile@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_accepted_reply,xdr_accepted_reply@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_authdes_cred,xdr_authdes_cred@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_authdes_verf,xdr_authdes_verf@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_authunix_parms,xdr_authunix_parms@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_callhdr,xdr_callhdr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_callmsg,xdr_callmsg@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_cback_data,xdr_cback_data@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_char,xdr_char@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_cryptkeyarg,xdr_cryptkeyarg@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_cryptkeyarg2,xdr_cryptkeyarg2@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_cryptkeyres,xdr_cryptkeyres@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_des_block,xdr_des_block@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_domainname,xdr_domainname@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_double,xdr_double@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_float,xdr_float@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_getcredres,xdr_getcredres@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_hyper,xdr_hyper@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_int16_t,xdr_int16_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_int32_t,xdr_int32_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_int64_t,xdr_int64_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_int8_t,xdr_int8_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_key_netstarg,xdr_key_netstarg@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_key_netstres,xdr_key_netstres@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_keybuf,xdr_keybuf@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_keydat,xdr_keydat@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_keystatus,xdr_keystatus@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_long,xdr_long@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_longlong_t,xdr_longlong_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_mapname,xdr_mapname@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_netnamestr,xdr_netnamestr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_obj_p,xdr_obj_p@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_opaque_auth,xdr_opaque_auth@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_peername,xdr_peername@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_pmap,xdr_pmap@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_pmaplist,xdr_pmaplist@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_quad_t,xdr_quad_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_reference,xdr_reference@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_rejected_reply,xdr_rejected_reply@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_replymsg,xdr_replymsg@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_rmtcall_args,xdr_rmtcall_args@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_rmtcallres,xdr_rmtcallres@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_short,xdr_short@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_u_hyper,xdr_u_hyper@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_u_long,xdr_u_long@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_u_longlong_t,xdr_u_longlong_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_u_quad_t,xdr_u_quad_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_u_short,xdr_u_short@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_uint16_t,xdr_uint16_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_uint64_t,xdr_uint64_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_uint8_t,xdr_uint8_t@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_union,xdr_union@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_unixcred,xdr_unixcred@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_valdat,xdr_valdat@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_vector,xdr_vector@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_wrapstring,xdr_wrapstring@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_yp_buf,xdr_yp_buf@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypbind_binding,xdr_ypbind_binding@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypbind_resp,xdr_ypbind_resp@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypbind_resptype,xdr_ypbind_resptype@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypbind_setdom,xdr_ypbind_setdom@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypdelete_args,xdr_ypdelete_args@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypmap_parms,xdr_ypmap_parms@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypmaplist,xdr_ypmaplist@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_yppush_status,xdr_yppush_status@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_yppushresp_xfr,xdr_yppushresp_xfr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypreq_key,xdr_ypreq_key@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypreq_nokey,xdr_ypreq_nokey@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypreq_xfr,xdr_ypreq_xfr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypresp_all,xdr_ypresp_all@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypresp_key_val,xdr_ypresp_key_val@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypresp_maplist,xdr_ypresp_maplist@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypresp_master,xdr_ypresp_master@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypresp_order,xdr_ypresp_order@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypresp_val,xdr_ypresp_val@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypresp_xfr,xdr_ypresp_xfr@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypstat,xdr_ypstat@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypupdate_args,xdr_ypupdate_args@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdr_ypxfrstat,xdr_ypxfrstat@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdrrec_create,xdrrec_create@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdrrec_endofrecord,xdrrec_endofrecord@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdrrec_eof,xdrrec_eof@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xdrrec_skiprecord,xdrrec_skiprecord@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xencrypt,xencrypt@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver xprt_register,xprt_register@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_all,yp_all@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_bind,yp_bind@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_first,yp_first@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_get_default_domain,yp_get_default_domain@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_master,yp_master@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_match,yp_match@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_next,yp_next@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_order,yp_order@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_unbind,yp_unbind@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yp_update,yp_update@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver ypbinderr_string,ypbinderr_string@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver yperr_string,yperr_string@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
+__asm__(".symver ypprot_err,ypprot_err@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");
 #endif
