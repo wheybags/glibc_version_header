@@ -51,17 +51,85 @@ def extract_versions_from_installed_folder(folder, version):
         elif syms[sym] != ver:
             dupes.append(line)
 
-
     if len(dupes):
         raise Exception("duplicate incompatible symbol versions found: " + str(dupes))
 
     return syms
 
-def generate_header_string(syms):
-    strings = ["#ifndef SET_GLIBC_LINK_VERSIONS_HEADER", "#define SET_GLIBC_LINK_VERSIONS_HEADER"]
+def generate_header_string(syms, missingFuncs):
+    pthread_funcs_in_libc_so = {
+        "pthread_attr_destroy",
+        "pthread_attr_init",
+        "pthread_attr_getdetachstate",
+        "pthread_attr_setdetachstate",
+        "pthread_attr_getinheritsched",
+        "pthread_attr_setinheritsched",
+        "pthread_attr_getschedparam",
+        "pthread_attr_setschedparam",
+        "pthread_attr_getschedpolicy",
+        "pthread_attr_setschedpolicy",
+        "pthread_attr_getscope",
+        "pthread_attr_setscope",
+        "pthread_condattr_destroy",
+        "pthread_condattr_init",
+        "pthread_cond_broadcast",
+        "pthread_cond_destroy",
+        "pthread_cond_init",
+        "pthread_cond_signalpthread_cond_wait",
+        "pthread_cond_timedwait",
+        "pthread_equal",
+        "pthread_exit",
+        "pthread_getschedparam",
+        "pthread_setschedparam",
+        "pthread_mutex_destroy",
+        "pthread_mutex_init",
+        "pthread_mutex_lock",
+        "pthread_mutex_unlock",
+        "pthread_self",
+        "pthread_setcancelstate",
+        "pthread_setcanceltype",
+        "pthread_attr_init",
+        "__register_atfork",
+        "pthread_cond_init pthread_cond_destroy",
+        "pthread_cond_wait pthread_cond_signal",
+        "pthread_cond_broadcast pthread_cond_timedwait"
+    }
+
+    pthread_symbols_used_as_weak_in_libgcc = {
+        "pthread_setspecific",
+        "__pthread_key_create",
+        "pthread_getspecific",
+        "pthread_key_create",
+        "pthread_once"
+    }
+    pthread_symbols_used_as_weak_in_libstdcpp = {
+       "pthread_setspecific",
+       "pthread_key_delete",
+       "__pthread_key_create",
+       "pthread_once",
+       "pthread_key_create",
+       "pthread_getspecific",
+       "pthread_join",
+       "pthread_detach",
+       "pthread_create"
+    }
+
+    strings = ["#if !defined(SET_GLIBC_LINK_VERSIONS_HEADER) && !defined(__ASSEMBLER__)", "#define SET_GLIBC_LINK_VERSIONS_HEADER"]
     
     for sym in sorted(syms.keys()):
-        strings.append('__asm__(".symver ' + sym + ',' + sym + '@' + syms[sym] + '");')
+        line = '__asm__(".symver ' + sym + ',' + sym + '@' + syms[sym] + '");'
+
+        if sym in pthread_funcs_in_libc_so:
+            line = "#ifndef _REENTRANT\n" + line + "\n#endif"
+        if sym in pthread_symbols_used_as_weak_in_libgcc:
+            line = "#ifndef IN_LIBGCC2\n" + line + "\n#endif"
+        if sym in pthread_symbols_used_as_weak_in_libstdcpp:
+            line = "#ifndef _GLIBCXX_SHARED\n" + line + "\n#endif"
+
+        strings.append(line)
+
+    for sym in sorted(list(missingFuncs)):
+        strings.append('__asm__(".symver ' + sym + ',' + sym + '@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");')
 
     strings.append("#endif")
 
@@ -198,17 +266,24 @@ def __main__():
     versionHeadersPath = basePath + "/version_headers"
     if os.path.exists(versionHeadersPath):
         shutil.rmtree(versionHeadersPath)
-
+    
+    syms = {}
+    allsyms = set()
     for version in supportedVersions:
+        print "generating data for version:", version
         installDir = get_glibc_binaries(version)
+        syms[version] = extract_versions_from_installed_folder(installDir, version)
+        allsyms = allsyms.union(set(syms[version].keys()))
+    
+    for version in supportedVersions:
+        print "writing header for version:", version
 
-        syms = extract_versions_from_installed_folder(installDir, version)
-        headerData = generate_header_string(syms)
+        missingFuncs = allsyms - set(syms[version].keys())
+        headerData = generate_header_string(syms[version], missingFuncs)
 
         if not os.path.exists(versionHeadersPath):
             os.makedirs(versionHeadersPath)
         
-        print "writing header for version:", version
         with open(versionHeadersPath + "/force_link_glibc_" + version.version_as_str() + ".h", "wb") as f:
             f.write(headerData)
 
