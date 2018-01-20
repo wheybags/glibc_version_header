@@ -3,7 +3,12 @@ Build portable linux binaries, no more linker errors on user's older machines fr
 
 # What is this?
 Essentially, this is a tool that allows you to specify the glibc version that you wnat to link against, regardless of what version is installed on your machine.
-This allows you to make portable linux binaries, without having to build your binaries on an ancient distro.
+This allows you to make portable linux binaries, without having to build your binaries on an ancient distro (which is the current standard practice).
+
+# Why would I want that?
+So you can distribute a portable binary to your users. You know how on windows, you can just download a zip with a program in it, unzip, double click, and the thing runs? Wouldn't it be nice if we could have that on linux? 
+There's no technical reason we can't, just standard practices that are hostile to this goal.
+My particular interest is in using it for binaries of games, but it's useful for all sorts of things.
 
 # Why not just static link glibc?
 A statically linked binary doesn't work unless you have the same version of glibc installed on the machine you run it on anyway. There is a [workaround](https://sourceware.org/glibc/wiki/FAQ#Even_statically_linked_programs_need_some_shared_libraries_which_is_not_acceptable_for_me.__What_can_I_do.3F) to this, but it has it's disadvantages, so noone does it.
