@@ -32,7 +32,7 @@ This is as simple as adding `-include /path/to/glibc_version_header.h` to your c
 
 ## Does that actually work?
 Yup, you just need to make sure all the binaries you're distributing are built with the magic header.
-I've built gcc and binutils with this technique on debian 9 (glibc 2.24), and then run it successfully on ubuntu 12.04 (glibc 2.13).
+I've built gcc and binutils with this technique on debian 9 (glibc 2.24), and then run it successfully on ubuntu 12.04 (glibc 2.15).
 It's worked out of the box for everything I've tried except building gcc itself, which required a little bit of messing, because it uses every obscure platform feature under the sun, many of which seem to have been invented almost for it's sole use.
 
 # Caveats
@@ -59,7 +59,7 @@ export CXXFLAGS="$CXXFLAGS -include /path/to/header.h"
 I would also recommend adding `-static-libgcc -static-libstdc++` as well.
 
 # What glibc version should I use then?
-Depends on who you wnat to target. The oldest supported version is glibc 0.13, which is the version used in ubuntu 12.04. That's probably ancient enough.
+Depends on who you want to target. The oldest supported version is glibc 2.13, which is the version used in ubuntu 11.04. That's probably ancient enough.
 
 
 
