@@ -119,8 +119,8 @@ def generate_header_string(syms, missingFuncs):
     for sym in sorted(syms.keys()):
         line = '__asm__(".symver ' + sym + ',' + sym + '@' + syms[sym] + '");'
 
-        if sym in pthread_funcs_in_libc_so:
-            line = "#ifndef _REENTRANT\n" + line + "\n#endif"
+        if sym in pthread_funcs_in_libc_so or sym in pthread_symbols_used_as_weak_in_libstdcpp or sym in pthread_symbols_used_as_weak_in_libgcc:
+            line = "#ifdef _REENTRANT\n" + line + "\n#endif"
         if sym in pthread_symbols_used_as_weak_in_libgcc:
             line = "#ifndef IN_LIBGCC2\n" + line + "\n#endif"
         if sym in pthread_symbols_used_as_weak_in_libstdcpp:
