@@ -16,7 +16,7 @@ A statically linked binary doesn't work unless you have the same version of glib
 
 # How does it work?
 Glibc uses something called symbol versioning. This means that when you use eg, `malloc` in your program, the symbol the linker will actually link against is `malloc@GLIBC_YOUR_INSTALLED_VERSION` (actually, it will link to malloc from the most recent version of glibc that changed the implementaton of malloc, but you get the idea). 
-This means that when you run your old program on a newer system, where malloc has been changed, to say, take it's size as a string instead of an integer, that new crazy malloc will be `malloc@GLIBC_CRAZY_VERSION` but you'll still link to `malloc@OLD_SANE_VERSION`, and glibc will keep exporting the old symbol with a compatible implementation.
+This means that when you run your old program on a newer system, where malloc has been changed, to say, take its size as a string instead of an integer, that new crazy malloc will be `malloc@GLIBC_CRAZY_VERSION` but you'll still link to `malloc@OLD_SANE_VERSION`, and glibc will keep exporting the old symbol with a compatible implementation.
 This effectively make binaries forwards compatible, as the system will always act like the version of glibc on the developers machine when they build the binary.
 The downside of this is that if I compile my super cool new program on my bleeding edge arch linux machine, that binary is almost useless to anyone who isn't cool enough to use the same new version of glibc as me. 
 I theorise that this is why almost noone ships linux binaries - it's just too much of a pain in the ass.
