@@ -144,19 +144,18 @@ def generate_header_string(syms, missingFuncs):
     return "\n".join(strings)
 
 def apply_patches(glibcDir, version):
-    patchesDir = basePath + "/patches"
+    patches_table = {
+        # patch                         x <= version <= y
+        "fix_obstack_compat.diff":     (Version(2, 13), Version(2, 17)),
+        "hvsep-remove.diff":           (Version(2, 16), Version(2, 16)),
+        "fix_bad_version_checks.diff": (Version(2, 13), Version(2, 18)),
+        "cvs-common-symbols.diff":     (Version(2, 23), Version(2, 25)),
+    }
 
-    if Version(2, 13) <= version <= Version(2, 17):
-        subprocess.check_call(["git", "apply", patchesDir + "/fix_obstack_compat.diff"], cwd=glibcDir)
-
-    if Version(2, 16) <= version <= Version(2, 16):
-        subprocess.check_call(["git", "apply", patchesDir + "/hvsep-remove.diff"], cwd=glibcDir)
-
-    if Version(2, 13) <= version <= Version(2, 18):
-        subprocess.check_call(["git", "apply", patchesDir + "/fix_bad_version_checks.diff"], cwd=glibcDir)
-
-    if Version(2, 23) <= version <= Version(2, 25):
-        subprocess.check_call(["git", "apply", patchesDir + "/cvs-common-symbols.diff"], cwd=glibcDir)
+    for patch, v_limits in patches_table.items():
+        if v_limits[0] <= version <= v_limits[1]:
+            patch_path = "{}/patches/{}".format(basePath, patch)
+            subprocess.check_call(["git", "apply", patch_path], cwd=glibcDir)
 
 
 def get_glibc_binaries(version):
