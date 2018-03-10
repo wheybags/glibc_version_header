@@ -33,7 +33,7 @@ def extract_versions_from_installed_folder(folder, version):
         command = "readelf -Ws '" + f + "' | grep \" [^ ]*@@GLIBC_[0-9.]*$\" -o"
         file_data = [x.decode("utf-8").strip() for x in subprocess.check_output(['/bin/bash', '-c', 'set -o pipefail; ' + command]).split()]
 
-        if version >= Version(2, 17) and version <= Version(2, 26):
+        if Version(2, 17) <= version <= Version(2, 27):
             # These are defined in both librt and libc, at different versions. file rt/Versions in
             # glibc source refers to them being moved from librt to libc,
             # but left behind for backwards compatibility
@@ -145,9 +145,19 @@ def generate_header_string(syms, missingFuncs):
 
 def apply_patches(glibcDir, version):
     patchesDir = basePath + "/patches"
-    
-    if version <= Version(2, 18):
-        subprocess.check_call(["git", "apply", patchesDir + "/fix_bad_version_checks.diff"], cwd=glibcDir) 
+
+    if Version(2, 13) <= version <= Version(2, 17):
+        subprocess.check_call(["git", "apply", patchesDir + "/fix_obstack_compat.diff"], cwd=glibcDir)
+
+    if Version(2, 16) <= version <= Version(2, 16):
+        subprocess.check_call(["git", "apply", patchesDir + "/hvsep-remove.diff"], cwd=glibcDir)
+
+    if Version(2, 13) <= version <= Version(2, 18):
+        subprocess.check_call(["git", "apply", patchesDir + "/fix_bad_version_checks.diff"], cwd=glibcDir)
+
+    if Version(2, 23) <= version <= Version(2, 25):
+        subprocess.check_call(["git", "apply", patchesDir + "/cvs-common-symbols.diff"], cwd=glibcDir)
+
 
 def get_glibc_binaries(version):
     """
@@ -179,6 +189,10 @@ def get_glibc_binaries(version):
 
         env = copy.deepcopy(os.environ)
         env["CC"] = "gcc"
+        if Version(2, 13) <= version <= Version(2, 16):
+            env["CFLAGS"] = "-U_FORTIFY_SOURCE -O2 -fno-stack-protector"
+        if Version(2, 13) <= version <= Version(2, 21):
+            env["LDFLAGS"] = "-no-pie"
 
         jobString = "-j" + str(multiprocessing.cpu_count())
 
@@ -267,7 +281,8 @@ SUPPORTED_VERSIONS = [
     Version(2, 23),
     Version(2, 24),
     Version(2, 25),
-    Version(2, 26)
+    Version(2, 26),
+    Version(2, 27),
 ]
 
 
