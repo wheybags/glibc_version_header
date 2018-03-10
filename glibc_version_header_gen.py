@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 import subprocess
 import sys
 import os
@@ -23,14 +25,14 @@ def extract_versions_from_installed_folder(folder, version):
         # These are linker scripts that just forward to other .sos, not actual elf binaries
         if f.split("/")[-1] in {'libc.so', 'libm.so', 'libpthread.so'}:
             continue
-        
+
         # Available versions will be listed in readelf output as function@GLIBC_version
         # Additionally, there will be a single function@@GLIBC_version entry, which defines the
         # default version.
         # See https://web.archive.org/web/20170124195801/https://www.akkadia.org/drepper/symbol-versioning section Static Linker
         command = "readelf -Ws '" + f + "' | grep \" [^ ]*@@GLIBC_[0-9.]*$\" -o"
         file_data = [x.strip() for x in subprocess.check_output([ '/bin/bash', '-c', 'set -o pipefail; ' + command]).split()]
-       
+
         if version >= Version(2, 17) and version <= Version(2, 26):
             # These are defined in both librt and libc, at different versions. file rt/Versions in glibc source refers to them being moved from
             # librt to libc, but left behind for backwards compatibility
@@ -115,7 +117,7 @@ def generate_header_string(syms, missingFuncs):
     }
 
     strings = ["#if !defined(SET_GLIBC_LINK_VERSIONS_HEADER) && !defined(__ASSEMBLER__)", "#define SET_GLIBC_LINK_VERSIONS_HEADER"]
-    
+
     for sym in sorted(syms.keys()):
         line = '__asm__(".symver ' + sym + ',' + sym + '@' + syms[sym] + '");'
 
@@ -160,7 +162,7 @@ def get_glibc_binaries(version):
         subprocess.check_call(["git", "checkout", str(version)], cwd=glibcDir)
 
         apply_patches(glibcDir, version)
-        
+
         if os.path.exists(buildDir):
             shutil.rmtree(buildDir)
         os.makedirs(buildDir)
@@ -186,7 +188,7 @@ def get_glibc_binaries(version):
 
 def check_have_required_programs():
     requiredPrograms = ["gcc", "make", "git", "readelf", "grep"]
-    
+
     missing = []
 
     for p in requiredPrograms:
@@ -236,7 +238,7 @@ class Version(object):
 
     def __eq__(self, other):
         return (self.major, self.minor, self.patch) == (other.major, other.minor, other.patch)
-    
+
     def __ne__(self, other):
         return (self.major, self.minor, self.patch) != (other.major, other.minor, other.patch)
 
@@ -266,7 +268,7 @@ def __main__():
     versionHeadersPath = basePath + "/version_headers"
     if os.path.exists(versionHeadersPath):
         shutil.rmtree(versionHeadersPath)
-    
+
     syms = {}
     allsyms = set()
     for version in supportedVersions:
@@ -274,7 +276,7 @@ def __main__():
         installDir = get_glibc_binaries(version)
         syms[version] = extract_versions_from_installed_folder(installDir, version)
         allsyms = allsyms.union(set(syms[version].keys()))
-    
+
     for version in supportedVersions:
         print "writing header for version:", version
 
@@ -283,7 +285,7 @@ def __main__():
 
         if not os.path.exists(versionHeadersPath):
             os.makedirs(versionHeadersPath)
-        
+
         with open(versionHeadersPath + "/force_link_glibc_" + version.version_as_str() + ".h", "wb") as f:
             f.write(headerData)
 
