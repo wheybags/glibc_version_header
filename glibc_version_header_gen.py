@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
+import sys
 import os
 import distutils.spawn
 import copy
@@ -138,6 +139,7 @@ def generate_header_string(syms, missingFuncs):
         strings.append('__asm__(".symver ' + sym + ',' + sym + '@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");')
 
     strings.append("#endif")
+    strings.append("")
 
     return "\n".join(strings)
 
@@ -207,11 +209,11 @@ class Version(object):
         if len(args) > 3 or len(args) < 2:
             raise Exception("invalid version: " + str(args))
 
-        self.major = args[0]
-        self.minor = args[1]
+        self.major = int(args[0])
+        self.minor = int(args[1])
 
         if len(args) == 3:
-            self.patch = args[2]
+            self.patch = int(args[2])
         else:
             self.patch = 0
 
@@ -250,43 +252,47 @@ class Version(object):
         return (self.major, self.minor, self.patch) != (other.major, other.minor, other.patch)
 
 
+SUPPORTED_VERSIONS = [
+    Version(2, 13),
+    Version(2, 14),
+    Version(2, 14, 1),
+    Version(2, 15),
+    Version(2, 16),
+    Version(2, 17),
+    Version(2, 18),
+    Version(2, 19),
+    Version(2, 20),
+    Version(2, 21),
+    Version(2, 22),
+    Version(2, 23),
+    Version(2, 24),
+    Version(2, 25),
+    Version(2, 26)
+]
+
 
 def main():
     check_have_required_programs()
 
-    supportedVersions = [
-        Version(2, 13),
-        Version(2, 14),
-        Version(2, 14, 1),
-        Version(2, 15),
-        Version(2, 16),
-        Version(2, 17),
-        Version(2, 18),
-        Version(2, 19),
-        Version(2, 20),
-        Version(2, 21),
-        Version(2, 22),
-        Version(2, 23),
-        Version(2, 24),
-        Version(2, 25),
-        Version(2, 26)
-    ]
+    if len(sys.argv) > 1:
+        print("Warning, requesting specific versions may mean you miss out on defining missing symbols")
+        requested_versions = [Version(*v.split('.')) for v in sys.argv[1:]]
+    else:
+        requested_versions = SUPPORTED_VERSIONS # build all by default
 
     versionHeadersPath = basePath + "/version_headers"
     if os.path.exists(versionHeadersPath):
         shutil.rmtree(versionHeadersPath)
 
     syms = {}
-    allsyms = set()
-    for version in supportedVersions:
+    for version in requested_versions:
         print("generating data for version:", version)
         installDir = get_glibc_binaries(version)
         syms[version] = extract_versions_from_installed_folder(installDir, version)
-        allsyms = allsyms.union(set(syms[version].keys()))
 
-    for version in supportedVersions:
+    allsyms = set.union(set(), *syms.values())
+    for version in requested_versions:
         print("writing header for version:", version)
-
         missingFuncs = allsyms - set(syms[version].keys())
         headerData = generate_header_string(syms[version], missingFuncs)
 
