@@ -145,11 +145,18 @@ def generate_header_string(syms, missingFuncs):
 
 def apply_patches(glibcDir, version):
     patches_table = {
-        # patch                         x <= version <= y
-        "fix_obstack_compat.diff":     (Version(2, 13), Version(2, 17)),
-        "hvsep-remove.diff":           (Version(2, 16), Version(2, 16)),
-        "fix_bad_version_checks.diff": (Version(2, 13), Version(2, 18)),
-        "cvs-common-symbols.diff":     (Version(2, 23), Version(2, 25)),
+        # patch                              x <= version <= y
+        "extern_inline_addition.diff":      (Version(2,  5), Version(2, 5, 1)),
+        "fix_obstack_compat.diff":          (Version(2,  5), Version(2, 17)),
+        "no-pattern-rule-mixing.diff":      (Version(2,  5), Version(2, 10, 2)),
+        "fix_linker_failure.diff":          (Version(2,  5), Version(2, 9)),
+        "remove_ctors_dtors.diff":          (Version(2,  5), Version(2, 12, 2)),
+        "fix_bad_version_checks_2.5.diff":  (Version(2,  5), Version(2, 6, 1)),
+        "fix_bad_version_checks_2.9.diff":  (Version(2,  7), Version(2, 9)),
+        "fix_bad_version_checks_2.10.diff": (Version(2, 10), Version(2, 12, 2)),
+        "fix_bad_version_checks.diff":      (Version(2, 13), Version(2, 18)),
+        "hvsep-remove.diff":                (Version(2, 16), Version(2, 16)),
+        "cvs-common-symbols.diff":          (Version(2, 23), Version(2, 25)),
     }
 
     for patch, v_limits in patches_table.items():
@@ -188,9 +195,9 @@ def get_glibc_binaries(version):
 
         env = copy.deepcopy(os.environ)
         env["CC"] = "gcc"
-        if Version(2, 13) <= version <= Version(2, 16):
+        if Version(2, 5) <= version <= Version(2, 16):
             env["CFLAGS"] = "-U_FORTIFY_SOURCE -O2 -fno-stack-protector"
-        if Version(2, 13) <= version <= Version(2, 21):
+        if Version(2, 5) <= version <= Version(2, 21):
             env["LDFLAGS"] = "-no-pie"
 
         jobString = "-j" + str(multiprocessing.cpu_count())
@@ -266,6 +273,16 @@ class Version(object):
 
 
 SUPPORTED_VERSIONS = [
+    Version(2, 5),
+    Version(2, 5, 1),
+    Version(2, 6),
+    Version(2, 6, 1),
+    Version(2, 7),
+    Version(2, 8),
+    Version(2, 9),
+    Version(2, 10, 2),
+    Version(2, 11, 3),
+    Version(2, 12, 2),
     Version(2, 13),
     Version(2, 14),
     Version(2, 14, 1),
