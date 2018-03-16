@@ -24,9 +24,9 @@ I theorise that this is why almost noone ships linux binaries - it's just too mu
 However, the version of a function that you link against _can_ be specified.
 The GNU assembler has a "psuedo-op" `.symver SYM,SYM@VERSION`, which forces the linker to use `SYM@VERSION` wherever you ask for `SYM`. 
 This can be embedded in c source like so: `__asm__(".symver SYM,SYM@GLIBC_VERSION");`.
-Great, but I want to use glib 2.13 for my whole program, not just one function in one translation unit.
+Great, but I want to use glibc 2.13 for my whole program, not just one function in one translation unit.
 So, what we do to resolve this, is we generate a header file that contains these symver asm blocks for every symbol exposed by glibc.
-To do this, we build every version of glibc from 2.13 to current (open an issue if the latest version is no longer current please), check what symbols are exposed in all the binaries built by that version (glibc splits the c std lib into a few different binaries), and generate the header accordingly. 
+To do this, we build every version of glibc from 2.5 to current (open an issue if the latest version is no longer current please), check what symbols are exposed in all the binaries built by that version (glibc splits the c std lib into a few different binaries), and generate the header accordingly. 
 Then, all you need to do is make sure that header is included in every translation unit in your build.
 This is as simple as adding `-include /path/to/glibc_version_header.h` to your compiler flags using whatever build system you use.
 
@@ -59,7 +59,7 @@ export CXXFLAGS="$CXXFLAGS -include /path/to/header.h"
 I would also recommend adding `-static-libgcc -static-libstdc++` as well.
 
 # What glibc version should I use then?
-Depends on who you want to target. The oldest supported version is glibc 2.13, which is the version used in ubuntu 11.04. That's probably ancient enough.
+Depends on who you want to target. The oldest supported version is glibc 2.5, which was released in 2006. That's probably ancient enough.
 
 
 
