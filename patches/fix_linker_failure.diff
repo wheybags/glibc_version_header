@@ -1,0 +1,23 @@
+fix linker failure with newer binutils
+
+http://bugs.gentoo.org/258072
+
+commit 9ec3d5f8d876b07747fd49827e2cef8286b6f4cd
+Author: Ulrich Drepper <drepper@redhat.com>
+Date:   Sat Jan 31 00:20:55 2009 +0000
+
+    (ld.so): Adjust the sed script to insert _begin in to newer linker scripts.
+
+diff --git a/elf/Makefile b/elf/Makefile
+index 8079fe9..e44ff1d 100644
+--- a/elf/Makefile
++++ b/elf/Makefile
+@@ -304,7 +304,7 @@ $(objpfx)ld.so: $(objpfx)librtld.os $(ld-map)
+ 		  $(LDFLAGS-rtld) -Wl,-z,defs -Wl,--verbose 2>&1 |	\
+ 		  LC_ALL=C \
+ 		  sed -e '/^=========/,/^=========/!d;/^=========/d'	\
+-		      -e 's/\. = 0 + SIZEOF_HEADERS;/& _begin = . - SIZEOF_HEADERS;/' \
++		      -e 's/\. = .* + SIZEOF_HEADERS;/& _begin = . - SIZEOF_HEADERS;/' \
+ 		  > $@.lds
+ 	$(LINK.o) -nostdlib -nostartfiles -shared -o $@			\
+ 		  $(LDFLAGS-rtld) -Wl,-z,defs $(z-now-$(bind-now))	\

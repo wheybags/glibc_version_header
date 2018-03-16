@@ -1,0 +1,1499 @@
+most of
+commit b037a293a48718af30d706c2e18c929d0e69a621
+Author: Ulrich Drepper <drepper@redhat.com>
+Date:   Sat Mar 17 17:04:28 2007 +0000
+
+    * configure.in (libc_cv_gnu89_inline): Test for -fgnu89-inline.
+
+plus partial commit 965cba048c978a2841c537383ed3408259c918f3 (configure)
+diff --git a/Makeconfig b/Makeconfig
+index 5a1aebccff..d79019f843 100644
+--- a/Makeconfig
++++ b/Makeconfig
+@@ -674,7 +674,7 @@ CPPFLAGS = $($(subdir)-CPPFLAGS) $(+includes) $(defines) \
+ 	   $(foreach lib,$(libof-$(basename $(@F))) \
+ 		         $(libof-$(<F)) $(libof-$(@F)),$(CPPFLAGS-$(lib))) \
+ 	   $(CPPFLAGS-$(<F)) $(CPPFLAGS-$(@F)) $(CPPFLAGS-$(basename $(@F)))
+-override CFLAGS	= -std=gnu99 \
++override CFLAGS	= -std=gnu99 $(gnu89-inline-CFLAGS) \
+ 		  $(filter-out %frame-pointer,$(+cflags)) $(+gccwarn-c) \
+ 		  $(sysdep-CFLAGS) $(CFLAGS-$(suffix $@)) $(CFLAGS-$(<F)) \
+ 		  $(CFLAGS-$(@F))
+diff --git a/argp/argp.h b/argp/argp.h
+index 3a5cb01fd8..baf3afd826 100644
+--- a/argp/argp.h
++++ b/argp/argp.h
+@@ -558,7 +559,7 @@ extern void *__argp_input (__const struct argp *__restrict __argp,
+ # endif
+
+ # ifndef ARGP_EI
+-#  define ARGP_EI extern __inline__
++#  define ARGP_EI __extern_inline
+ # endif
+
+ ARGP_EI void
+diff --git a/bits/mathinline.h b/bits/mathinline.h
+index 5498af6b63..02ec21b438 100644
+--- a/bits/mathinline.h
++++ b/bits/mathinline.h
+@@ -1,6 +1,6 @@
+ /* This file should provide inline versions of math functions.
+
+-   Surround GCC-specific parts with #ifdef __GNUC__, and use `extern __inline'.
++   Surround GCC-specific parts with #ifdef __GNUC__, and use `__extern_inline'.
+
+    This file should define __MATH_INLINES if functions are actually defined as
+    inlines.  */
+diff --git a/bits/sigset.h b/bits/sigset.h
+index 5fc8692df0..d6f9311e71 100644
+--- a/bits/sigset.h
++++ b/bits/sigset.h
+@@ -38,7 +39,7 @@ typedef unsigned long int __sigset_t;
+ #define _SIGSET_H_fns 1
+
+ #ifndef _EXTERN_INLINE
+-# define _EXTERN_INLINE extern __inline
++# define _EXTERN_INLINE __extern_inline
+ #endif
+
+ /* Return a mask that includes SIG only.  The cast to `sigset_t' avoids
+diff --git a/bits/string.h b/bits/string.h
+index ad68b038b6..f8630d2c52 100644
+--- a/bits/string.h
++++ b/bits/string.h
+@@ -1,6 +1,6 @@
+ /* This file should provide inline versions of string functions.
+
+-   Surround GCC-specific parts with #ifdef __GNUC__, and use `extern __inline'.
++   Surround GCC-specific parts with #ifdef __GNUC__, and use `__extern_inline'.
+
+    This file should define __STRING_INLINES if functions are actually defined
+    as inlines.  */
+diff --git a/config.make.in b/config.make.in
+index 677da3a891..9b1c8f9b76 100644
+--- a/config.make.in
++++ b/config.make.in
+@@ -58,6 +58,7 @@ have-cpp-asm-debuginfo = @libc_cv_cpp_asm_debuginfo@
+ enable-check-abi = @enable_check_abi@
+ have-forced-unwind = @libc_cv_forced_unwind@
+ have-fpie = @libc_cv_fpie@
++gnu89-inline-CFLAGS = @libc_cv_gnu89_inline@
+ have-ssp = @libc_cv_ssp@
+ have-selinux = @have_selinux@
+ have-libaudit = @have_libaudit@
+diff --git a/configure b/configure
+index d14f89a8a9..4d33d92cf6 100755
+--- a/configure
++++ b/configure
+@@ -313,7 +313,7 @@ ac_includes_default="\
+ # include <unistd.h>
+ #endif"
+
+-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS with_fp with_cvs enable_check_abi oldest_abi bindnow force_install all_warnings build build_cpu build_vendor build_os host host_cpu host_vendor host_os subdirs add_ons add_on_subdirs base_machine submachine sysnames sysdeps_add_ons INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN_S CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC OBJEXT BUILD_CC cross_compiling CPP CXX CXXFLAGS ac_ct_CXX AR OBJDUMP RANLIB ac_ct_RANLIB MIG AS LD PWD_P MAKE MSGFMT MAKEINFO SED AUTOCONF SYSINCLUDES CXX_SYSINCLUDES libc_cv_gcc_static_libgcc BASH libc_cv_have_bash2 KSH libc_cv_have_ksh AWK PERL INSTALL_INFO BISON VERSIONING libc_cv_asm_protected_directive libc_cv_cc_with_libunwind libc_cv_z_nodelete libc_cv_z_nodlopen libc_cv_z_initfirst libc_cv_z_relro libc_cv_Bgroup libc_cv_libgcc_s_suffix libc_cv_as_needed ASFLAGS_config libc_cv_z_combreloc libc_cv_z_execstack libc_cv_fpie libc_cv_hashstyle fno_unit_at_a_time libc_cv_ssp libc_cv_have_initfini no_whole_archive exceptions LIBGD have_libaudit have_libcap have_selinux EGREP sizeof_long_double libc_cv_gcc_unwind_find_fde uname_sysname uname_release uname_version old_glibc_headers libc_cv_slibdir libc_cv_localedir libc_cv_sysconfdir libc_cv_rootsbindir libc_cv_forced_unwind use_ldconfig ldd_rewrite_script elf xcoff static shared pic_default profile omitfp bounded static_nss nopic_initfini DEFINES mach_interface_list VERSION RELEASE LIBOBJS LTLIBOBJS'
++ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS with_fp with_cvs enable_check_abi oldest_abi bindnow force_install all_warnings build build_cpu build_vendor build_os host host_cpu host_vendor host_os subdirs add_ons add_on_subdirs base_machine submachine sysnames sysdeps_add_ons INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA LN_S CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC OBJEXT BUILD_CC cross_compiling CPP CXX CXXFLAGS ac_ct_CXX AR OBJDUMP RANLIB ac_ct_RANLIB MIG AS LD PWD_P MAKE MSGFMT MAKEINFO SED AUTOCONF SYSINCLUDES CXX_SYSINCLUDES libc_cv_gcc_static_libgcc BASH libc_cv_have_bash2 KSH libc_cv_have_ksh AWK PERL INSTALL_INFO BISON VERSIONING libc_cv_cc_with_libunwind libc_cv_Bgroup libc_cv_libgcc_s_suffix libc_cv_as_needed ASFLAGS_config libc_cv_z_combreloc libc_cv_z_execstack libc_cv_fpie libc_cv_hashstyle fno_unit_at_a_time libc_cv_ssp libc_cv_gnu89_inline libc_cv_have_initfini no_whole_archive exceptions LIBGD have_libaudit have_libcap have_selinux EGREP sizeof_long_double libc_cv_gcc_unwind_find_fde uname_sysname uname_release uname_version old_glibc_headers libc_cv_slibdir libc_cv_localedir libc_cv_sysconfdir libc_cv_rootsbindir libc_cv_forced_unwind use_ldconfig ldd_rewrite_script elf xcoff static shared pic_default profile omitfp bounded static_nss nopic_initfini DEFINES mach_interface_list VERSION RELEASE LIBOBJS LTLIBOBJS'
+ ac_subst_files=''
+
+ # Initialize some variables set by options.
+@@ -5963,6 +5963,42 @@ echo "$as_me:$LINENO: result: $libc_cv_ssp" >&5
+ echo "${ECHO_T}$libc_cv_ssp" >&6
+
+
++echo "$as_me:$LINENO: checking for -fgnu89-inline" >&5
++echo $ECHO_N "checking for -fgnu89-inline... $ECHO_C" >&6
++if test "${libc_cv_gnu89_inline+set}" = set; then
++  echo $ECHO_N "(cached) $ECHO_C" >&6
++else
++  cat > conftest.c <<EOF
++int foo;
++#ifdef __GNUC_GNU_INLINE__
++main () { return 0;}
++#else
++#error
++#endif
++EOF
++if { ac_try='${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS -std=gnu99 -fgnu89-inline
++			    -o conftest conftest.c 1>&5'
++  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
++  (eval $ac_try) 2>&5
++  ac_status=$?
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); }; }
++then
++  libc_cv_gnu89_inline=yes
++else
++  libc_cv_gnu89_inline=no
++fi
++rm -f conftest*
++fi
++echo "$as_me:$LINENO: result: $libc_cv_gnu89_inline" >&5
++echo "${ECHO_T}$libc_cv_gnu89_inline" >&6
++if test $libc_cv_gnu89_inline = yes; then
++  libc_cv_gnu89_inline=-fgnu89-inline
++else
++  libc_cv_gnu89_inline=
++fi
++
++
+ if test $elf != yes; then
+   echo "$as_me:$LINENO: checking for .init and .fini sections" >&5
+ echo $ECHO_N "checking for .init and .fini sections... $ECHO_C" >&6
+@@ -8526,6 +8562,7 @@ s,@libc_cv_fpie@,$libc_cv_fpie,;t t
+ s,@libc_cv_hashstyle@,$libc_cv_hashstyle,;t t
+ s,@fno_unit_at_a_time@,$fno_unit_at_a_time,;t t
+ s,@libc_cv_ssp@,$libc_cv_ssp,;t t
++s,@libc_cv_gnu89_inline@,$libc_cv_gnu89_inline,;t t
+ s,@libc_cv_have_initfini@,$libc_cv_have_initfini,;t t
+ s,@no_whole_archive@,$no_whole_archive,;t t
+ s,@exceptions@,$exceptions,;t t
+diff --git a/configure.in b/configure.in
+index 924b0406cb..427a4d0812 100644
+--- a/configure.in
++++ b/configure.in
+@@ -1641,6 +1641,30 @@ fi
+ rm -f conftest*])
+ AC_SUBST(libc_cv_ssp)
+
++AC_CACHE_CHECK(for -fgnu89-inline, libc_cv_gnu89_inline, [dnl
++cat > conftest.c <<EOF
++int foo;
++#ifdef __GNUC_GNU_INLINE__
++main () { return 0;}
++#else
++#error
++#endif
++EOF
++if AC_TRY_COMMAND([${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS -std=gnu99 -fgnu89-inline
++			    -o conftest conftest.c 1>&AS_MESSAGE_LOG_FD])
++then
++  libc_cv_gnu89_inline=yes
++else
++  libc_cv_gnu89_inline=no
++fi
++rm -f conftest*])
++if test $libc_cv_gnu89_inline = yes; then
++  libc_cv_gnu89_inline=-fgnu89-inline
++else
++  libc_cv_gnu89_inline=
++fi
++AC_SUBST(libc_cv_gnu89_inline)
++
+ if test $elf != yes; then
+   AC_CACHE_CHECK(for .init and .fini sections, libc_cv_have_initfini,
+ 		 [AC_TRY_COMPILE(, [asm (".section .init");
+diff --git a/ctype/ctype.h b/ctype/ctype.h
+index e08545359d..9ae7fb6088 100644
+--- a/ctype/ctype.h
++++ b/ctype/ctype.h
+@@ -187,13 +187,13 @@ __exctype (_tolower);
+ # endif
+
+ # ifdef __USE_EXTERN_INLINES
+-extern __inline int
++__extern_inline int
+ __NTH (tolower (int __c))
+ {
+   return __c >= -128 && __c < 256 ? (*__ctype_tolower_loc ())[__c] : __c;
+ }
+
+-extern __inline int
++__extern_inline int
+ __NTH (toupper (int __c))
+ {
+   return __c >= -128 && __c < 256 ? (*__ctype_toupper_loc ())[__c] : __c;
+diff --git a/hurd/hurd.h b/hurd/hurd.h
+index 0dc9f2158b..642ea43b7b 100644
+--- a/hurd/hurd.h
++++ b/hurd/hurd.h
+@@ -44,7 +45,7 @@
+ #include <errno.h>
+
+ #ifndef _HURD_H_EXTERN_INLINE
+-#define _HURD_H_EXTERN_INLINE extern __inline
++#define _HURD_H_EXTERN_INLINE __extern_inline
+ #endif
+
+ _HURD_H_EXTERN_INLINE int
+diff --git a/hurd/hurd/fd.h b/hurd/hurd/fd.h
+index ad11367f3b..08d4407e88 100644
+--- a/hurd/hurd/fd.h
++++ b/hurd/hurd/fd.h
+@@ -52,7 +52,7 @@ extern struct mutex _hurd_dtable_lock; /* Locks those two variables.  */
+ #include <hurd/signal.h>
+
+ #ifndef _HURD_FD_H_EXTERN_INLINE
+-#define _HURD_FD_H_EXTERN_INLINE extern __inline
++#define _HURD_FD_H_EXTERN_INLINE __extern_inline
+ #endif
+
+ /* Returns the descriptor cell for FD.  If FD is invalid or unused, return
+diff --git a/hurd/hurd/port.h b/hurd/hurd/port.h
+index 4e7bbebc18..a1803c36a5 100644
+--- a/hurd/hurd/port.h
++++ b/hurd/hurd/port.h
+@@ -55,7 +56,7 @@ struct hurd_port
+
+
+ #ifndef _HURD_PORT_H_EXTERN_INLINE
+-#define _HURD_PORT_H_EXTERN_INLINE extern __inline
++#define _HURD_PORT_H_EXTERN_INLINE __extern_inline
+ #endif
+
+
+diff --git a/hurd/hurd/signal.h b/hurd/hurd/signal.h
+index 238a73f19c..c5b04f434c 100644
+--- a/hurd/hurd/signal.h
++++ b/hurd/hurd/signal.h
+@@ -126,7 +126,7 @@ extern struct hurd_sigstate *_hurd_self_sigstate (void)
+      __attribute__ ((__const__));
+
+ #ifndef _HURD_SIGNAL_H_EXTERN_INLINE
+-#define _HURD_SIGNAL_H_EXTERN_INLINE extern __inline
++#define _HURD_SIGNAL_H_EXTERN_INLINE __extern_inline
+ #endif
+
+ _HURD_SIGNAL_H_EXTERN_INLINE struct hurd_sigstate *
+diff --git a/hurd/hurd/threadvar.h b/hurd/hurd/threadvar.h
+index 5e7441f921..a0535f7596 100644
+--- a/hurd/hurd/threadvar.h
++++ b/hurd/hurd/threadvar.h
+@@ -74,7 +74,7 @@ enum __hurd_threadvar_index
+
+
+ #ifndef _HURD_THREADVAR_H_EXTERN_INLINE
+-#define _HURD_THREADVAR_H_EXTERN_INLINE extern __inline
++#define _HURD_THREADVAR_H_EXTERN_INLINE __extern_inline
+ #endif
+
+ /* Return the location of the value for the per-thread variable with index
+diff --git a/hurd/hurd/userlink.h b/hurd/hurd/userlink.h
+index 65179acac6..34457e7a0f 100644
+--- a/hurd/hurd/userlink.h
++++ b/hurd/hurd/userlink.h
+@@ -71,7 +71,7 @@ struct hurd_userlink
+
+
+ #ifndef _HURD_USERLINK_H_EXTERN_INLINE
+-#define _HURD_USERLINK_H_EXTERN_INLINE extern __inline
++#define _HURD_USERLINK_H_EXTERN_INLINE __extern_inline
+ #endif
+
+
+diff --git a/io/sys/stat.h b/io/sys/stat.h
+index 4cc0b429a2..d1f4484185 100644
+--- a/io/sys/stat.h
++++ b/io/sys/stat.h
+@@ -430,28 +431,28 @@ extern int __xmknodat (int __ver, int __fd, __const char *__path,
+ #if defined __GNUC__ && __GNUC__ >= 2
+ /* Inlined versions of the real stat and mknod functions.  */
+
+-extern __inline__ int
++__extern_inline int
+ __NTH (stat (__const char *__path, struct stat *__statbuf))
+ {
+   return __xstat (_STAT_VER, __path, __statbuf);
+ }
+
+ # if defined __USE_BSD || defined __USE_XOPEN_EXTENDED
+-extern __inline__ int
++__extern_inline int
+ __NTH (lstat (__const char *__path, struct stat *__statbuf))
+ {
+   return __lxstat (_STAT_VER, __path, __statbuf);
+ }
+ # endif
+
+-extern __inline__ int
++__extern_inline int
+ __NTH (fstat (int __fd, struct stat *__statbuf))
+ {
+   return __fxstat (_STAT_VER, __fd, __statbuf);
+ }
+
+ # ifdef __USE_ATFILE
+-extern __inline__ int
++__extern_inline int
+ __NTH (fstatat (int __fd, __const char *__filename, struct stat *__statbuf,
+ 		int __flag))
+ {
+@@ -460,7 +461,7 @@ __NTH (fstatat (int __fd, __const char *__filename, struct stat *__statbuf,
+ # endif
+
+ # if defined __USE_MISC || defined __USE_BSD
+-extern __inline__ int
++__extern_inline int
+ __NTH (mknod (__const char *__path, __mode_t __mode, __dev_t __dev))
+ {
+   return __xmknod (_MKNOD_VER, __path, __mode, &__dev);
+@@ -468,7 +469,7 @@ __NTH (mknod (__const char *__path, __mode_t __mode, __dev_t __dev))
+ # endif
+
+ # ifdef __USE_ATFILE
+-extern __inline__ int
++__extern_inline int
+ __NTH (mknodat (int __fd, __const char *__path, __mode_t __mode,
+ 		__dev_t __dev))
+ {
+@@ -479,28 +480,28 @@ __NTH (mknodat (int __fd, __const char *__path, __mode_t __mode,
+ # if defined __USE_LARGEFILE64 \
+   && (! defined __USE_FILE_OFFSET64 \
+       || (defined __REDIRECT_NTH && defined __OPTIMIZE__))
+-extern __inline__ int
++__extern_inline int
+ __NTH (stat64 (__const char *__path, struct stat64 *__statbuf))
+ {
+   return __xstat64 (_STAT_VER, __path, __statbuf);
+ }
+
+ #  if defined __USE_BSD || defined __USE_XOPEN_EXTENDED
+-extern __inline__ int
++__extern_inline int
+ __NTH (lstat64 (__const char *__path, struct stat64 *__statbuf))
+ {
+   return __lxstat64 (_STAT_VER, __path, __statbuf);
+ }
+ #  endif
+
+-extern __inline__ int
++__extern_inline int
+ __NTH (fstat64 (int __fd, struct stat64 *__statbuf))
+ {
+   return __fxstat64 (_STAT_VER, __fd, __statbuf);
+ }
+
+ #  ifdef __USE_GNU
+-extern __inline__ int
++__extern_inline int
+ __NTH (fstatat64 (int __fd, __const char *__filename, struct stat64 *__statbuf,
+ 		  int __flag))
+ {
+diff --git a/libio/bits/stdio.h b/libio/bits/stdio.h
+index 2d44fad1f5..4d23f28db0 100644
+--- a/libio/bits/stdio.h
++++ b/libio/bits/stdio.h
+@@ -24,7 +24,7 @@
+ #ifdef __cplusplus
+ # define __STDIO_INLINE inline
+ #else
+-# define __STDIO_INLINE extern __inline
++# define __STDIO_INLINE __extern_inline
+ #endif
+
+
+diff --git a/libio/bits/stdio2.h b/libio/bits/stdio2.h
+index 0582edbccb..924a4817e7 100644
+--- a/libio/bits/stdio2.h
++++ b/libio/bits/stdio2.h
+@@ -75,7 +75,7 @@ extern int __vprintf_chk (int __flag, __const char *__restrict __format,
+ extern char *__gets_chk (char *__str, size_t) __wur;
+ extern char *__REDIRECT (__gets_alias, (char *__str), gets) __wur;
+
+-extern __always_inline __wur char *
++__extern_always_inline __wur char *
+ gets (char *__str)
+ {
+   if (__bos (__str) != (size_t) -1)
+@@ -89,7 +89,7 @@ extern char *__REDIRECT (__fgets_alias,
+ 			 (char *__restrict __s, int __n,
+ 			  FILE *__restrict __stream), fgets) __wur;
+
+-extern __always_inline __wur char *
++__extern_always_inline __wur char *
+ fgets (char *__restrict __s, int __n, FILE *__restrict __stream)
+ {
+   if (__bos (__s) != (size_t) -1
+@@ -105,7 +105,7 @@ extern char *__REDIRECT (__fgets_unlocked_alias,
+ 			 (char *__restrict __s, int __n,
+ 			  FILE *__restrict __stream), fgets_unlocked) __wur;
+
+-extern __always_inline __wur char *
++__extern_always_inline __wur char *
+ fgets_unlocked (char *__restrict __s, int __n, FILE *__restrict __stream)
+ {
+   if (__bos (__s) != (size_t) -1
+diff --git a/mach/lock-intern.h b/mach/lock-intern.h
+index 5aabc4a11f..d42a378f4d 100644
+--- a/mach/lock-intern.h
++++ b/mach/lock-intern.h
+@@ -22,7 +22,7 @@
+ #include <machine-lock.h>
+
+ #ifndef _EXTERN_INLINE
+-#define _EXTERN_INLINE extern __inline
++#define _EXTERN_INLINE __extern_inline
+ #endif
+
+
+diff --git a/mach/mach/mig_support.h b/mach/mach/mig_support.h
+index 4cc3e987a9..f02e8d4f83 100644
+--- a/mach/mach/mig_support.h
++++ b/mach/mach/mig_support.h
+@@ -67,12 +67,12 @@ extern void mig_reply_setup (const mach_msg_header_t *__request,
+ /* Idiocy support function.  */
+ extern vm_size_t mig_strncpy (char *__dst, const char *__src, vm_size_t __len);
+ extern vm_size_t __mig_strncpy (char *__dst, const char *__src, vm_size_t);
+-extern __inline vm_size_t
++__extern_inline vm_size_t
+ __mig_strncpy (char *__dst, const char *__src, vm_size_t __len)
+ {
+   return __stpncpy (__dst, __src, __len) - __dst;
+ }
+-extern __inline vm_size_t
++__extern_inline vm_size_t
+ mig_strncpy (char *__dst, const char *__src, vm_size_t __len)
+ {
+   return __mig_strncpy (__dst, __src, __len);
+diff --git a/math/bits/cmathcalls.h b/math/bits/cmathcalls.h
+index c680c6d8e4..db7f69c72e 100644
+--- a/math/bits/cmathcalls.h
++++ b/math/bits/cmathcalls.h
+@@ -135,21 +135,21 @@ __MATHDECL (_Mdouble_,creal, (_Mdouble_complex_ __z));
+ #if defined __GNUC__ && !__GNUC_PREREQ (2, 97) && defined __OPTIMIZE__
+
+ /* Imaginary part of Z.  */
+-extern __inline _Mdouble_
++__extern_inline _Mdouble_
+ __MATH_PRECNAME(cimag) (_Mdouble_complex_ __z) __THROW
+ {
+   return __imag__ __z;
+ }
+
+ /* Real part of Z.  */
+-extern __inline _Mdouble_
++__extern_inline _Mdouble_
+ __MATH_PRECNAME(creal) (_Mdouble_complex_ __z) __THROW
+ {
+   return __real__ __z;
+ }
+
+ /* Complex conjugate of Z.  */
+-extern __inline _Mdouble_complex_
++__extern_inline _Mdouble_complex_
+ __MATH_PRECNAME(conj) (_Mdouble_complex_ __z) __THROW
+ {
+   return __extension__ ~__z;
+diff --git a/misc/sys/cdefs.h b/misc/sys/cdefs.h
+index ce5e83d571..ab7d327c59 100644
+--- a/misc/sys/cdefs.h
++++ b/misc/sys/cdefs.h
+@@ -279,6 +279,17 @@
+ # define __always_inline __inline
+ #endif
+
++/* GCC 4.3 and above with -std=c99 or -std=gnu99 implements ISO C99
++   inline semantics, unless -fgnu89-inline is used.  */
++#ifdef __GNUC_STDC_INLINE__
++# define __extern_inline extern __inline __attribute__ ((__gnu_inline__))
++# define __extern_always_inline \
++  extern __always_inline __attribute__ ((__gnu_inline__))
++#else
++# define __extern_inline extern __inline
++# define __extern_always_inline extern __always_inline
++#endif
++
+ /* It is possible to compile containing GCC extensions even if GCC is
+    run in pedantic mode if the uses are carefully marked using the
+    `__extension__' keyword.  But this is not generally available before
+diff --git a/nptl/sysdeps/pthread/bits/libc-lock.h b/nptl/sysdeps/pthread/bits/libc-lock.h
+index 795caa7135..de72e96498 100644
+--- a/nptl/sysdeps/pthread/bits/libc-lock.h
++++ b/nptl/sysdeps/pthread/bits/libc-lock.h
+@@ -408,7 +408,7 @@ extern void _pthread_cleanup_pop_restore (struct _pthread_cleanup_buffer *buffer
+
+
+ /* Normal cleanup handling, based on C cleanup attribute.  */
+-extern __inline void
++__extern_inline void
+ __libc_cleanup_routine (struct __pthread_cleanup_frame *f)
+ {
+   if (f->__do_it)
+diff --git a/nptl/sysdeps/pthread/pthread.h b/nptl/sysdeps/pthread/pthread.h
+index f60ecdee18..4dc0b2272b 100644
+--- a/nptl/sysdeps/pthread/pthread.h
++++ b/nptl/sysdeps/pthread/pthread.h
+@@ -572,7 +573,7 @@ class __pthread_cleanup_class
+    function the compiler is free to decide inlining the change when
+    needed or fall back on the copy which must exist somewhere
+    else.  */
+-extern __inline void
++__extern_inline void
+ __pthread_cleanup_routine (struct __pthread_cleanup_frame *__frame)
+ {
+   if (__frame->__do_it)
+@@ -1103,7 +1104,7 @@ extern int pthread_atfork (void (*__prepare) (void),
+
+ #ifdef __USE_EXTERN_INLINES
+ /* Optimizations.  */
+-extern __inline int
++__extern_inline int
+ __NTH (pthread_equal (pthread_t __thread1, pthread_t __thread2))
+ {
+   return __thread1 == __thread2;
+diff --git a/posix/bits/unistd.h b/posix/bits/unistd.h
+index b08aef2f6c..331e8ea3b9 100644
+--- a/posix/bits/unistd.h
++++ b/posix/bits/unistd.h
+@@ -26,7 +26,7 @@ extern ssize_t __read_chk (int __fd, void *__buf, size_t __nbytes,
+ extern ssize_t __REDIRECT (__read_alias, (int __fd, void *__buf,
+ 					  size_t __nbytes), read) __wur;
+
+-extern __always_inline __wur ssize_t
++__extern_always_inline __wur ssize_t
+ read (int __fd, void *__buf, size_t __nbytes)
+ {
+   if (__bos0 (__buf) != (size_t) -1
+@@ -48,7 +48,7 @@ extern ssize_t __REDIRECT (__pread64_alias,
+ 			    __off64_t __offset), pread64) __wur;
+
+ # ifndef __USE_FILE_OFFSET64
+-extern __always_inline __wur ssize_t
++__extern_always_inline __wur ssize_t
+ pread (int __fd, void *__buf, size_t __nbytes, __off_t __offset)
+ {
+   if (__bos0 (__buf) != (size_t) -1
+@@ -57,7 +57,7 @@ pread (int __fd, void *__buf, size_t __nbytes, __off_t __offset)
+   return __pread_alias (__fd, __buf, __nbytes, __offset);
+ }
+ # else
+-extern __always_inline __wur ssize_t
++__extern_always_inline __wur ssize_t
+ pread (int __fd, void *__buf, size_t __nbytes, __off64_t __offset)
+ {
+   if (__bos0 (__buf) != (size_t) -1
+@@ -68,7 +68,7 @@ pread (int __fd, void *__buf, size_t __nbytes, __off64_t __offset)
+ # endif
+
+ # ifdef __USE_LARGEFILE64
+-extern __always_inline __wur ssize_t
++__extern_always_inline __wur ssize_t
+ pread64 (int __fd, void *__buf, size_t __nbytes, __off64_t __offset)
+ {
+   if (__bos0 (__buf) != (size_t) -1
+@@ -89,7 +89,7 @@ extern ssize_t __REDIRECT_NTH (__readlink_alias,
+ 				char *__restrict __buf, size_t __len), readlink)
+      __nonnull ((1, 2)) __wur;
+
+-extern __always_inline __nonnull ((1, 2)) __wur ssize_t
++__extern_always_inline __nonnull ((1, 2)) __wur ssize_t
+ __NTH (readlink (__const char *__restrict __path, char *__restrict __buf,
+ 		 size_t __len))
+ {
+@@ -111,7 +111,7 @@ extern ssize_t __REDIRECT_NTH (__readlinkat_alias,
+ 			       readlinkat)
+      __nonnull ((2, 3)) __wur;
+
+-extern __always_inline __nonnull ((2, 3)) __wur ssize_t
++__extern_always_inline __nonnull ((2, 3)) __wur ssize_t
+ __NTH (readlinkat (int __fd, __const char *__restrict __path,
+ 		   char *__restrict __buf, size_t __len))
+ {
+@@ -127,7 +127,7 @@ extern char *__getcwd_chk (char *__buf, size_t __size, size_t __buflen)
+ extern char *__REDIRECT_NTH (__getcwd_alias,
+ 			     (char *__buf, size_t __size), getcwd) __wur;
+
+-extern __always_inline __wur char *
++__extern_always_inline __wur char *
+ __NTH (getcwd (char *__buf, size_t __size))
+ {
+   if (__bos (__buf) != (size_t) -1
+@@ -142,7 +142,7 @@ extern char *__getwd_chk (char *__buf, size_t buflen)
+ extern char *__REDIRECT_NTH (__getwd_alias, (char *__buf), getwd)
+      __nonnull ((1)) __wur;
+
+-extern __always_inline __nonnull ((1)) __attribute_deprecated__ __wur char *
++__extern_always_inline __nonnull ((1)) __attribute_deprecated__ __wur char *
+ __NTH (getwd (char *__buf))
+ {
+   if (__bos (__buf) != (size_t) -1)
+@@ -156,7 +156,7 @@ extern size_t __confstr_chk (int __name, char *__buf, size_t __len,
+ extern size_t __REDIRECT_NTH (__confstr_alias, (int __name, char *__buf,
+ 						size_t __len), confstr);
+
+-extern __always_inline size_t
++__extern_always_inline size_t
+ __NTH (confstr (int __name, char *__buf, size_t __len))
+ {
+   if (__bos (__buf) != (size_t) -1
+@@ -171,7 +171,7 @@ extern int __getgroups_chk (int __size, __gid_t __list[], size_t listlen)
+ extern int __REDIRECT_NTH (__getgroups_alias, (int __size, __gid_t __list[]),
+ 			   getgroups) __wur;
+
+-extern __always_inline int
++__extern_always_inline int
+ __NTH (getgroups (int __size, __gid_t __list[]))
+ {
+   if (__bos (__list) != (size_t) -1
+@@ -188,7 +188,7 @@ extern int __REDIRECT_NTH (__ttyname_r_alias, (int __fd, char *__buf,
+ 					       size_t __buflen), ttyname_r)
+      __nonnull ((2));
+
+-extern __always_inline int
++__extern_always_inline int
+ __NTH (ttyname_r (int __fd, char *__buf, size_t __buflen))
+ {
+   if (__bos (__buf) != (size_t) -1
+@@ -204,7 +204,7 @@ extern int __getlogin_r_chk (char *__buf, size_t __buflen, size_t __nreal)
+ extern int __REDIRECT (__getlogin_r_alias, (char *__buf, size_t __buflen),
+ 		       getlogin_r) __nonnull ((1));
+
+-extern __always_inline int
++__extern_always_inline int
+ getlogin_r (char *__buf, size_t __buflen)
+ {
+   if (__bos (__buf) != (size_t) -1
+@@ -221,7 +221,7 @@ extern int __gethostname_chk (char *__buf, size_t __buflen, size_t __nreal)
+ extern int __REDIRECT_NTH (__gethostname_alias, (char *__buf, size_t __buflen),
+ 			   gethostname) __nonnull ((1));
+
+-extern __always_inline int
++__extern_always_inline int
+ __NTH (gethostname (char *__buf, size_t __buflen))
+ {
+   if (__bos (__buf) != (size_t) -1
+@@ -239,7 +239,7 @@ extern int __REDIRECT_NTH (__getdomainname_alias, (char *__buf,
+ 						   size_t __buflen),
+ 			   getdomainname) __nonnull ((1)) __wur;
+
+-extern __always_inline int
++__extern_always_inline int
+ __NTH (getdomainname (char *__buf, size_t __buflen))
+ {
+   if (__bos (__buf) != (size_t) -1
+diff --git a/socket/bits/socket2.h b/socket/bits/socket2.h
+index 2543ea37d4..9fac75669c 100644
+--- a/socket/bits/socket2.h
++++ b/socket/bits/socket2.h
+@@ -26,7 +26,7 @@ extern ssize_t __recv_chk (int __fd, void *__buf, size_t __n, size_t __buflen,
+ extern ssize_t __REDIRECT (__recv_alias, (int __fd, void *__buf, size_t __n,
+ 					  int __flags), recv);
+
+-extern __always_inline ssize_t
++__extern_always_inline ssize_t
+ recv (int __fd, void *__buf, size_t __n, int __flags)
+ {
+   if (__bos0 (__buf) != (size_t) -1
+@@ -44,7 +44,7 @@ extern ssize_t __REDIRECT (__recvfrom_alias,
+ 			    int __flags, __SOCKADDR_ARG __addr,
+ 			    socklen_t *__restrict __addr_len), recvfrom);
+
+-extern __always_inline ssize_t
++__extern_always_inline ssize_t
+ recvfrom (int __fd, void *__restrict __buf, size_t __n, int __flags,
+ 	  __SOCKADDR_ARG __addr, socklen_t *__restrict __addr_len)
+ {
+diff --git a/stdlib/bits/stdlib.h b/stdlib/bits/stdlib.h
+index 4bacb09a09..7ee7bf5587 100644
+--- a/stdlib/bits/stdlib.h
++++ b/stdlib/bits/stdlib.h
+@@ -28,7 +28,7 @@ extern char *__REDIRECT_NTH (__realpath_alias,
+ 			     (__const char *__restrict __name,
+ 			      char *__restrict __resolved), realpath) __wur;
+
+-extern __always_inline __wur char *
++__extern_always_inline __wur char *
+ __NTH (realpath (__const char *__restrict __name, char *__restrict __resolved))
+ {
+   if (__bos (__resolved) != (size_t) -1)
+@@ -44,7 +44,7 @@ extern int __REDIRECT_NTH (__ptsname_r_alias, (int __fd, char *__buf,
+ 					       size_t __buflen), ptsname_r)
+      __nonnull ((2));
+
+-extern __always_inline int
++__extern_always_inline int
+ __NTH (ptsname_r (int __fd, char *__buf, size_t __buflen))
+ {
+   if (__bos (__buf) != (size_t) -1
+@@ -59,7 +59,7 @@ extern int __wctomb_chk (char *__s, wchar_t __wchar, size_t __buflen)
+ extern int __REDIRECT_NTH (__wctomb_alias, (char *__s, wchar_t __wchar),
+ 			   wctomb) __wur;
+
+-extern __always_inline __wur int
++__extern_always_inline __wur int
+ __NTH (wctomb (char *__s, wchar_t __wchar))
+ {
+   /* We would have to include <limits.h> to get a definition of MB_LEN_MAX.
+@@ -83,7 +83,7 @@ extern size_t __REDIRECT_NTH (__mbstowcs_alias,
+ 			       __const char *__restrict __src,
+ 			       size_t __len), mbstowcs);
+
+-extern __always_inline size_t
++__extern_always_inline size_t
+ __NTH (mbstowcs (wchar_t *__restrict __dst, __const char *__restrict __src,
+ 		 size_t __len))
+ {
+@@ -104,7 +104,7 @@ extern size_t __REDIRECT_NTH (__wcstombs_alias,
+ 			       __const wchar_t *__restrict __src,
+ 			       size_t __len), wcstombs);
+
+-extern __always_inline size_t
++__extern_always_inline size_t
+ __NTH (wcstombs (char *__restrict __dst, __const wchar_t *__restrict __src,
+ 		 size_t __len))
+ {
+diff --git a/stdlib/gmp.h b/stdlib/gmp.h
+index 0ecc6d1024..cace8be230 100644
+--- a/stdlib/gmp.h
++++ b/stdlib/gmp.h
+@@ -21,6 +21,8 @@ MA 02111-1307, USA. */
+
+ #ifndef __GMP_H__
+
++#include <features.h>
++
+ #ifndef __GNU_MP__
+ #define __GNU_MP__ 2
+ #define __need_size_t
+@@ -41,7 +43,7 @@ MA 02111-1307, USA. */
+
+ #ifndef _EXTERN_INLINE
+ #ifdef __GNUC__
+-#define _EXTERN_INLINE extern __inline__
++#define _EXTERN_INLINE __extern_inline
+ #else
+ #define _EXTERN_INLINE static
+ #endif
+diff --git a/stdlib/stdlib.h b/stdlib/stdlib.h
+index fd81cf9e5b..58fdbaf5be 100644
+--- a/stdlib/stdlib.h
++++ b/stdlib/stdlib.h
+@@ -324,18 +324,18 @@ extern unsigned long long int __strtoull_internal (__const char *
+ /* Define inline functions which call the internal entry points.  */
+
+ __BEGIN_NAMESPACE_STD
+-extern __inline double
++__extern_inline double
+ __NTH (strtod (__const char *__restrict __nptr, char **__restrict __endptr))
+ {
+   return __strtod_internal (__nptr, __endptr, 0);
+ }
+-extern __inline long int
++__extern_inline long int
+ __NTH (strtol (__const char *__restrict __nptr, char **__restrict __endptr,
+ 	       int __base))
+ {
+   return __strtol_internal (__nptr, __endptr, __base, 0);
+ }
+-extern __inline unsigned long int
++__extern_inline unsigned long int
+ __NTH (strtoul (__const char *__restrict __nptr, char **__restrict __endptr,
+ 		int __base))
+ {
+@@ -345,13 +345,13 @@ __END_NAMESPACE_STD
+
+ # ifdef __USE_ISOC99
+ __BEGIN_NAMESPACE_C99
+-extern __inline float
++__extern_inline float
+ __NTH (strtof (__const char *__restrict __nptr, char **__restrict __endptr))
+ {
+   return __strtof_internal (__nptr, __endptr, 0);
+ }
+ #  ifndef __LDBL_COMPAT
+-extern __inline long double
++__extern_inline long double
+ __NTH (strtold (__const char *__restrict __nptr, char **__restrict __endptr))
+ {
+   return __strtold_internal (__nptr, __endptr, 0);
+@@ -361,13 +361,13 @@ __END_NAMESPACE_C99
+ # endif
+
+ # ifdef __USE_BSD
+-__extension__ extern __inline long long int
++__extension__ __extern_inline long long int
+ __NTH (strtoq (__const char *__restrict __nptr, char **__restrict __endptr,
+ 	       int __base))
+ {
+   return __strtoll_internal (__nptr, __endptr, __base, 0);
+ }
+-__extension__ extern __inline unsigned long long int
++__extension__ __extern_inline unsigned long long int
+ __NTH (strtouq (__const char *__restrict __nptr, char **__restrict __endptr,
+ 		int __base))
+ {
+@@ -377,13 +377,13 @@ __NTH (strtouq (__const char *__restrict __nptr, char **__restrict __endptr,
+
+ # if defined __USE_MISC || defined __USE_ISOC99
+ __BEGIN_NAMESPACE_C99
+-__extension__ extern __inline long long int
++__extension__ __extern_inline long long int
+ __NTH (strtoll (__const char *__restrict __nptr, char **__restrict __endptr,
+ 		int __base))
+ {
+   return __strtoll_internal (__nptr, __endptr, __base, 0);
+ }
+-__extension__ extern __inline unsigned long long int
++__extension__ __extern_inline unsigned long long int
+ __NTH (strtoull (__const char * __restrict __nptr, char **__restrict __endptr,
+ 		 int __base))
+ {
+@@ -393,17 +393,17 @@ __END_NAMESPACE_C99
+ # endif
+
+ __BEGIN_NAMESPACE_STD
+-extern __inline double
++__extern_inline double
+ __NTH (atof (__const char *__nptr))
+ {
+   return strtod (__nptr, (char **) NULL);
+ }
+-extern __inline int
++__extern_inline int
+ __NTH (atoi (__const char *__nptr))
+ {
+   return (int) strtol (__nptr, (char **) NULL, 10);
+ }
+-extern __inline long int
++__extern_inline long int
+ __NTH (atol (__const char *__nptr))
+ {
+   return strtol (__nptr, (char **) NULL, 10);
+@@ -412,7 +412,7 @@ __END_NAMESPACE_STD
+
+ # if defined __USE_MISC || defined __USE_ISOC99
+ __BEGIN_NAMESPACE_C99
+-__extension__ extern __inline long long int
++__extension__ __extern_inline long long int
+ __NTH (atoll (__const char *__nptr))
+ {
+   return strtoll (__nptr, (char **) NULL, 10);
+diff --git a/string/argz.h b/string/argz.h
+index dd7e4706c7..4141d998f9 100644
+--- a/string/argz.h
++++ b/string/argz.h
+@@ -160,7 +160,7 @@ extern char *argz_next (__const char *__restrict __argz, size_t __argz_len,
+ 			__const char *__restrict __entry) __THROW;
+
+ #ifdef __USE_EXTERN_INLINES
+-extern inline char *
++__extern_inline char *
+ __NTH (__argz_next (__const char *__argz, size_t __argz_len,
+ 		    __const char *__entry))
+ {
+@@ -174,7 +174,7 @@ __NTH (__argz_next (__const char *__argz, size_t __argz_len,
+   else
+     return __argz_len > 0 ? (char *) __argz : 0;
+ }
+-extern inline char *
++__extern_inline char *
+ __NTH (argz_next (__const char *__argz, size_t __argz_len,
+ 		  __const char *__entry))
+ {
+diff --git a/string/bits/string2.h b/string/bits/string2.h
+index ba84da2346..1e4d736a17 100644
+--- a/string/bits/string2.h
++++ b/string/bits/string2.h
+@@ -43,7 +43,7 @@
+ # ifdef __cplusplus
+ #  define __STRING_INLINE inline
+ # else
+-#  define __STRING_INLINE extern __inline
++#  define __STRING_INLINE __extern_inline
+ # endif
+ #endif
+
+diff --git a/string/bits/string3.h b/string/bits/string3.h
+index 041ac11259..f68ce5899f 100644
+--- a/string/bits/string3.h
++++ b/string/bits/string3.h
+@@ -151,7 +151,7 @@ extern char *__REDIRECT_NTH (__stpncpy_alias, (char *__dest,
+ 					       __const char *__src,
+ 					       size_t __n), stpncpy);
+
+-extern __always_inline char *
++__extern_always_inline char *
+ __NTH (stpncpy (char *__dest, __const char *__src, size_t __n))
+ {
+   if (__bos (__dest) != (size_t) -1
+diff --git a/sysdeps/alpha/fpu/bits/mathinline.h b/sysdeps/alpha/fpu/bits/mathinline.h
+index 87d40058c3..99fee717c8 100644
+--- a/sysdeps/alpha/fpu/bits/mathinline.h
++++ b/sysdeps/alpha/fpu/bits/mathinline.h
+@@ -25,7 +25,7 @@
+ #ifdef __cplusplus
+ # define __MATH_INLINE __inline
+ #else
+-# define __MATH_INLINE extern __inline
++# define __MATH_INLINE __extern_inline
+ #endif
+
+ #if defined __USE_ISOC99 && defined __GNUC__ && !__GNUC_PREREQ(3,0)
+diff --git a/sysdeps/generic/inttypes.h b/sysdeps/generic/inttypes.h
+index 87f532f1d4..3f1b316c09 100644
+--- a/sysdeps/generic/inttypes.h
++++ b/sysdeps/generic/inttypes.h
+@@ -330,7 +330,7 @@ extern long int __strtol_internal (__const char *__restrict __nptr,
+ 				   int __base, int __group) __THROW;
+ #   define __strtol_internal_defined	1
+ #  endif
+-extern __inline intmax_t
++__extern_inline intmax_t
+ __NTH (strtoimax (__const char *__restrict nptr, char **__restrict endptr,
+ 		  int base))
+ {
+@@ -345,7 +345,7 @@ extern unsigned long int __strtoul_internal (__const char *
+ 					     int __base, int __group) __THROW;
+ #   define __strtoul_internal_defined	1
+ #  endif
+-extern __inline uintmax_t
++__extern_inline uintmax_t
+ __NTH (strtoumax (__const char *__restrict nptr, char **__restrict endptr,
+ 		  int base))
+ {
+@@ -359,7 +359,7 @@ extern long int __wcstol_internal (__const __gwchar_t * __restrict __nptr,
+ 				   int __base, int __group) __THROW;
+ #   define __wcstol_internal_defined	1
+ #  endif
+-extern __inline intmax_t
++__extern_inline intmax_t
+ __NTH (wcstoimax (__const __gwchar_t *__restrict nptr,
+ 		  __gwchar_t **__restrict endptr, int base))
+ {
+@@ -376,7 +376,7 @@ extern unsigned long int __wcstoul_internal (__const __gwchar_t *
+ 					     int __base, int __group) __THROW;
+ #   define __wcstoul_internal_defined	1
+ #  endif
+-extern __inline uintmax_t
++__extern_inline uintmax_t
+ __NTH (wcstoumax (__const __gwchar_t *__restrict nptr,
+ 		  __gwchar_t **__restrict endptr, int base))
+ {
+@@ -393,7 +393,7 @@ extern long long int __strtoll_internal (__const char *__restrict __nptr,
+ 					 int __base, int __group) __THROW;
+ #   define __strtoll_internal_defined	1
+ #  endif
+-extern __inline intmax_t
++__extern_inline intmax_t
+ __NTH (strtoimax (__const char *__restrict nptr, char **__restrict endptr,
+ 		  int base))
+ {
+@@ -411,7 +411,7 @@ extern unsigned long long int __strtoull_internal (__const char *
+ 						   int __group) __THROW;
+ #   define __strtoull_internal_defined	1
+ #  endif
+-extern __inline uintmax_t
++__extern_inline uintmax_t
+ __NTH (strtoumax (__const char *__restrict nptr, char **__restrict endptr,
+ 		  int base))
+ {
+@@ -427,7 +427,7 @@ extern long long int __wcstoll_internal (__const __gwchar_t *
+ 					 int __base, int __group) __THROW;
+ #   define __wcstoll_internal_defined	1
+ #  endif
+-extern __inline intmax_t
++__extern_inline intmax_t
+ __NTH (wcstoimax (__const __gwchar_t *__restrict nptr,
+ 		  __gwchar_t **__restrict endptr, int base))
+ {
+@@ -446,7 +446,7 @@ extern unsigned long long int __wcstoull_internal (__const __gwchar_t *
+ 						   int __group) __THROW;
+ #   define __wcstoull_internal_defined	1
+ #  endif
+-extern __inline uintmax_t
++__extern_inline uintmax_t
+ __NTH (wcstoumax (__const __gwchar_t *__restrict nptr,
+ 		  __gwchar_t **__restrict endptr, int base))
+ {
+diff --git a/sysdeps/generic/machine-lock.h b/sysdeps/generic/machine-lock.h
+index c7cadf5128..db9f444891 100644
+--- a/sysdeps/generic/machine-lock.h
++++ b/sysdeps/generic/machine-lock.h
+@@ -30,7 +30,7 @@ typedef volatile int __spin_lock_t;
+
+
+ #ifndef _EXTERN_INLINE
+-#define _EXTERN_INLINE extern __inline
++#define _EXTERN_INLINE __extern_inline
+ #endif
+
+ /* Unlock LOCK.  */
+diff --git a/sysdeps/generic/machine-sp.h b/sysdeps/generic/machine-sp.h
+index a8be7c0f69..25e423efa5 100644
+--- a/sysdeps/generic/machine-sp.h
++++ b/sysdeps/generic/machine-sp.h
+@@ -23,7 +23,7 @@
+ /* Return the current stack pointer.  */
+
+ #ifndef _EXTERN_INLINE
+-#define _EXTERN_INLINE extern __inline
++#define _EXTERN_INLINE __extern_inline
+ #endif
+
+ _EXTERN_INLINE void *
+diff --git a/sysdeps/i386/fpu/bits/mathinline.h b/sysdeps/i386/fpu/bits/mathinline.h
+index 28547d44b8..a0f630e240 100644
+--- a/sysdeps/i386/fpu/bits/mathinline.h
++++ b/sysdeps/i386/fpu/bits/mathinline.h
+@@ -26,7 +26,7 @@
+ #ifdef __cplusplus
+ # define __MATH_INLINE __inline
+ #else
+-# define __MATH_INLINE extern __inline
++# define __MATH_INLINE __extern_inline
+ #endif
+
+
+diff --git a/sysdeps/i386/i486/bits/string.h b/sysdeps/i386/i486/bits/string.h
+index 203907b146..2db9abc9e4 100644
+--- a/sysdeps/i386/i486/bits/string.h
++++ b/sysdeps/i386/i486/bits/string.h
+@@ -35,7 +35,7 @@
+ # ifdef __cplusplus
+ #  define __STRING_INLINE inline
+ # else
+-#  define __STRING_INLINE extern __inline
++#  define __STRING_INLINE __extern_inline
+ # endif
+ #endif
+
+diff --git a/sysdeps/ia64/fpu/bits/mathinline.h b/sysdeps/ia64/fpu/bits/mathinline.h
+index 9bb5f1a710..1e90257182 100644
+--- a/sysdeps/ia64/fpu/bits/mathinline.h
++++ b/sysdeps/ia64/fpu/bits/mathinline.h
+@@ -24,7 +24,7 @@
+ #ifdef __cplusplus
+ # define __MATH_INLINE __inline
+ #else
+-# define __MATH_INLINE extern __inline
++# define __MATH_INLINE __extern_inline
+ #endif
+
+ #if defined __USE_ISOC99 && defined __GNUC__ && __GNUC__ >= 2
+diff --git a/sysdeps/mach/alpha/machine-lock.h b/sysdeps/mach/alpha/machine-lock.h
+index 80f8750c87..bd27d2a51f 100644
+--- a/sysdeps/mach/alpha/machine-lock.h
++++ b/sysdeps/mach/alpha/machine-lock.h
+@@ -30,7 +30,7 @@ typedef __volatile long int __spin_lock_t;
+
+
+ #ifndef _EXTERN_INLINE
+-#define _EXTERN_INLINE extern __inline
++#define _EXTERN_INLINE __extern_inline
+ #endif
+
+ /* Unlock LOCK.  */
+diff --git a/sysdeps/mach/alpha/machine-sp.h b/sysdeps/mach/alpha/machine-sp.h
+index b737525574..e6df63c9ac 100644
+--- a/sysdeps/mach/alpha/machine-sp.h
++++ b/sysdeps/mach/alpha/machine-sp.h
+@@ -23,7 +23,7 @@
+ /* Return the current stack pointer.  */
+
+ #ifndef _EXTERN_INLINE
+-#define _EXTERN_INLINE extern __inline
++#define _EXTERN_INLINE __extern_inline
+ #endif
+
+ _EXTERN_INLINE void *
+diff --git a/sysdeps/mach/i386/machine-lock.h b/sysdeps/mach/i386/machine-lock.h
+index 7c23fba8c5..d786628170 100644
+--- a/sysdeps/mach/i386/machine-lock.h
++++ b/sysdeps/mach/i386/machine-lock.h
+@@ -30,7 +30,7 @@ typedef __volatile int __spin_lock_t;
+
+
+ #ifndef _EXTERN_INLINE
+-#define _EXTERN_INLINE extern __inline
++#define _EXTERN_INLINE __extern_inline
+ #endif
+
+ /* Unlock LOCK.  */
+diff --git a/sysdeps/mach/powerpc/machine-lock.h b/sysdeps/mach/powerpc/machine-lock.h
+index cba6b0a6e2..96af2219be 100644
+--- a/sysdeps/mach/powerpc/machine-lock.h
++++ b/sysdeps/mach/powerpc/machine-lock.h
+@@ -30,7 +30,7 @@ typedef __volatile long int __spin_lock_t;
+
+
+ #ifndef _EXTERN_INLINE
+-#define _EXTERN_INLINE extern __inline
++#define _EXTERN_INLINE __extern_inline
+ #endif
+
+ /* Unlock LOCK.  */
+diff --git a/sysdeps/mach/powerpc/machine-sp.h b/sysdeps/mach/powerpc/machine-sp.h
+index cf5341cb9b..267707bce0 100644
+--- a/sysdeps/mach/powerpc/machine-sp.h
++++ b/sysdeps/mach/powerpc/machine-sp.h
+@@ -27,7 +27,7 @@
+ # ifdef _HURD_THREADVAR_H_EXTERN_INLINE
+ #  define _EXTERN_INLINE _HURD_THREADVAR_H_EXTERN_INLINE
+ # else
+-#  define _EXTERN_INLINE extern __inline
++#  define _EXTERN_INLINE __extern_inline
+ # endif
+ #endif
+
+diff --git a/sysdeps/powerpc/fpu/bits/mathinline.h b/sysdeps/powerpc/fpu/bits/mathinline.h
+index aed899e882..b2c3f6ab09 100644
+--- a/sysdeps/powerpc/fpu/bits/mathinline.h
++++ b/sysdeps/powerpc/fpu/bits/mathinline.h
+@@ -25,7 +25,7 @@
+ #ifdef __cplusplus
+ # define __MATH_INLINE __inline
+ #else
+-# define __MATH_INLINE extern __inline
++# define __MATH_INLINE __extern_inline
+ #endif  /* __cplusplus */
+
+ #if defined __GNUC__ && !defined _SOFT_FLOAT
+diff --git a/sysdeps/s390/bits/string.h b/sysdeps/s390/bits/string.h
+index d83df39bb2..e16c7cb829 100644
+--- a/sysdeps/s390/bits/string.h
++++ b/sysdeps/s390/bits/string.h
+@@ -34,7 +34,7 @@
+ # ifdef __cplusplus
+ #  define __STRING_INLINE inline
+ # else
+-#  define __STRING_INLINE extern __inline
++#  define __STRING_INLINE __extern_inline
+ # endif
+ #endif
+
+diff --git a/sysdeps/s390/fpu/bits/mathinline.h b/sysdeps/s390/fpu/bits/mathinline.h
+index 5c6b83ad06..06a6368450 100644
+--- a/sysdeps/s390/fpu/bits/mathinline.h
++++ b/sysdeps/s390/fpu/bits/mathinline.h
+@@ -24,7 +24,7 @@
+ #ifdef __cplusplus
+ # define __MATH_INLINE __inline
+ #else
+-# define __MATH_INLINE extern __inline
++# define __MATH_INLINE __extern_inline
+ #endif
+
+ #if (!defined __NO_MATH_INLINES || defined __LIBC_INTERNAL_MATH_INLINES) \
+diff --git a/sysdeps/sparc/fpu/bits/mathinline.h b/sysdeps/sparc/fpu/bits/mathinline.h
+index 9dd784d122..16ad22e666 100644
+--- a/sysdeps/sparc/fpu/bits/mathinline.h
++++ b/sysdeps/sparc/fpu/bits/mathinline.h
+@@ -131,7 +131,7 @@
+ # ifdef __cplusplus
+ #  define __MATH_INLINE __inline
+ # else
+-#  define __MATH_INLINE extern __inline
++#  define __MATH_INLINE __extern_inline
+ # endif  /* __cplusplus */
+
+ /* The gcc, version 2.7 or below, has problems with all this inlining
+diff --git a/sysdeps/unix/bsd/bsd4.4/bits/socket.h b/sysdeps/unix/bsd/bsd4.4/bits/socket.h
+index b2227f10d2..f74603f948 100644
+--- a/sysdeps/unix/bsd/bsd4.4/bits/socket.h
++++ b/sysdeps/unix/bsd/bsd4.4/bits/socket.h
+@@ -227,7 +227,7 @@ extern struct cmsghdr *__cmsg_nxthdr (struct msghdr *__mhdr,
+ 				      struct cmsghdr *__cmsg) __THROW;
+ #ifdef __USE_EXTERN_INLINES
+ # ifndef _EXTERN_INLINE
+-#  define _EXTERN_INLINE extern __inline
++#  define _EXTERN_INLINE __extern_inline
+ # endif
+ _EXTERN_INLINE struct cmsghdr *
+ __NTH (__cmsg_nxthdr (struct msghdr *__mhdr, struct cmsghdr *__cmsg))
+diff --git a/sysdeps/unix/sysv/linux/bits/sigset.h b/sysdeps/unix/sysv/linux/bits/sigset.h
+index 7ccadda456..daec8ac494 100644
+--- a/sysdeps/unix/sysv/linux/bits/sigset.h
++++ b/sysdeps/unix/sysv/linux/bits/sigset.h
+@@ -43,7 +44,7 @@ typedef struct
+ # define _SIGSET_H_fns 1
+
+ # ifndef _EXTERN_INLINE
+-#  define _EXTERN_INLINE extern __inline
++#  define _EXTERN_INLINE __extern_inline
+ # endif
+
+ /* Return a mask that includes the bit for SIG only.  */
+diff --git a/sysdeps/unix/sysv/linux/bits/socket.h b/sysdeps/unix/sysv/linux/bits/socket.h
+index 356a2ece74..377f589bbd 100644
+--- a/sysdeps/unix/sysv/linux/bits/socket.h
++++ b/sysdeps/unix/sysv/linux/bits/socket.h
+@@ -264,7 +265,7 @@ extern struct cmsghdr *__cmsg_nxthdr (struct msghdr *__mhdr,
+ 				      struct cmsghdr *__cmsg) __THROW;
+ #ifdef __USE_EXTERN_INLINES
+ # ifndef _EXTERN_INLINE
+-#  define _EXTERN_INLINE extern __inline
++#  define _EXTERN_INLINE __extern_inline
+ # endif
+ _EXTERN_INLINE struct cmsghdr *
+ __NTH (__cmsg_nxthdr (struct msghdr *__mhdr, struct cmsghdr *__cmsg))
+diff --git a/sysdeps/unix/sysv/linux/sys/sysmacros.h b/sysdeps/unix/sysv/linux/sys/sysmacros.h
+index 179642ff40..e59672980e 100644
+--- a/sysdeps/unix/sysv/linux/sys/sysmacros.h
++++ b/sysdeps/unix/sysv/linux/sys/sysmacros.h
+@@ -27,30 +28,30 @@
+    they need.  */
+ #ifdef __GLIBC_HAVE_LONG_LONG
+ __extension__
+-extern __inline unsigned int gnu_dev_major (unsigned long long int __dev)
++__extern_inline unsigned int gnu_dev_major (unsigned long long int __dev)
+      __THROW;
+ __extension__
+-extern __inline unsigned int gnu_dev_minor (unsigned long long int __dev)
++__extern_inline unsigned int gnu_dev_minor (unsigned long long int __dev)
+      __THROW;
+ __extension__
+-extern __inline unsigned long long int gnu_dev_makedev (unsigned int __major,
++__extern_inline unsigned long long int gnu_dev_makedev (unsigned int __major,
+ 							unsigned int __minor)
+      __THROW;
+
+ # if defined __GNUC__ && __GNUC__ >= 2
+-__extension__ extern __inline unsigned int
++__extension__ __extern_inline unsigned int
+ __NTH (gnu_dev_major (unsigned long long int __dev))
+ {
+   return ((__dev >> 8) & 0xfff) | ((unsigned int) (__dev >> 32) & ~0xfff);
+ }
+
+-__extension__ extern __inline unsigned int
++__extension__ __extern_inline unsigned int
+ __NTH (gnu_dev_minor (unsigned long long int __dev))
+ {
+   return (__dev & 0xff) | ((unsigned int) (__dev >> 12) & ~0xff);
+ }
+
+-__extension__ extern __inline unsigned long long int
++__extension__ __extern_inline unsigned long long int
+ __NTH (gnu_dev_makedev (unsigned int __major, unsigned int __minor))
+ {
+   return ((__minor & 0xff) | ((__major & 0xfff) << 8)
+diff --git a/sysdeps/x86_64/fpu/bits/mathinline.h b/sysdeps/x86_64/fpu/bits/mathinline.h
+index 39d11b678d..d08a9b033b 100644
+--- a/sysdeps/x86_64/fpu/bits/mathinline.h
++++ b/sysdeps/x86_64/fpu/bits/mathinline.h
+@@ -25,7 +25,7 @@
+ #ifdef __cplusplus
+ # define __MATH_INLINE __inline
+ #else
+-# define __MATH_INLINE extern __inline
++# define __MATH_INLINE __extern_inline
+ #endif
+
+
+diff --git a/wcsmbs/bits/wchar2.h b/wcsmbs/bits/wchar2.h
+index 00216ec059..697b9f2cd8 100644
+--- a/wcsmbs/bits/wchar2.h
++++ b/wcsmbs/bits/wchar2.h
+@@ -30,7 +30,7 @@ extern wchar_t *__REDIRECT_NTH (__wmemcpy_alias,
+ 				 __const wchar_t *__restrict __s2, size_t __n),
+ 				wmemcpy);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wmemcpy (wchar_t *__restrict __s1, __const wchar_t *__restrict __s2,
+ 		size_t __n))
+ {
+@@ -46,7 +46,7 @@ extern wchar_t *__REDIRECT_NTH (__wmemmove_alias, (wchar_t *__s1,
+ 						   __const wchar_t *__s2,
+ 						   size_t __n), wmemmove);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wmemmove (wchar_t *__restrict __s1, __const wchar_t *__restrict __s2,
+ 		 size_t __n))
+ {
+@@ -65,7 +65,7 @@ extern wchar_t *__REDIRECT_NTH (__wmempcpy_alias,
+ 				 __const wchar_t *__restrict __s2,
+ 				 size_t __n), wmempcpy);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wmempcpy (wchar_t *__restrict __s1, __const wchar_t *__restrict __s2,
+ 		 size_t __n))
+ {
+@@ -81,7 +81,7 @@ extern wchar_t *__wmemset_chk (wchar_t *__s, wchar_t __c, size_t __n,
+ extern wchar_t *__REDIRECT_NTH (__wmemset_alias, (wchar_t *__s, wchar_t __c,
+ 						  size_t __n), wmemset);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wmemset (wchar_t *__restrict __s, wchar_t __c, size_t __n))
+ {
+   if (__bos0 (__s) != (size_t) -1)
+@@ -97,7 +97,7 @@ extern wchar_t *__REDIRECT_NTH (__wcscpy_alias,
+ 				(wchar_t *__restrict __dest,
+ 				 __const wchar_t *__restrict __src), wcscpy);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wcscpy (wchar_t *__dest, __const wchar_t *__src))
+ {
+   if (__bos (__dest) != (size_t) -1)
+@@ -112,7 +112,7 @@ extern wchar_t *__REDIRECT_NTH (__wcpcpy_alias, (wchar_t *__dest,
+ 						 __const wchar_t *__src),
+ 				wcpcpy);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wcpcpy (wchar_t *__dest, __const wchar_t *__src))
+ {
+   if (__bos (__dest) != (size_t) -1)
+@@ -129,7 +129,7 @@ extern wchar_t *__REDIRECT_NTH (__wcsncpy_alias,
+ 				 __const wchar_t *__restrict __src,
+ 				 size_t __n), wcsncpy);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wcsncpy (wchar_t *__dest, __const wchar_t *__src, size_t __n))
+ {
+   if (__bos (__dest) != (size_t) -1
+@@ -148,7 +148,7 @@ extern wchar_t *__REDIRECT_NTH (__wcpncpy_alias,
+ 				 __const wchar_t *__restrict __src,
+ 				 size_t __n), wcpncpy);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wcpncpy (wchar_t *__dest, __const wchar_t *__src, size_t __n))
+ {
+   if (__bos (__dest) != (size_t) -1
+@@ -166,7 +166,7 @@ extern wchar_t *__REDIRECT_NTH (__wcscat_alias,
+ 				(wchar_t *__restrict __dest,
+ 				 __const wchar_t *__restrict __src), wcscat);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wcscat (wchar_t *__dest, __const wchar_t *__src))
+ {
+   if (__bos (__dest) != (size_t) -1)
+@@ -183,7 +183,7 @@ extern wchar_t *__REDIRECT_NTH (__wcsncat_alias,
+ 				 __const wchar_t *__restrict __src,
+ 				 size_t __n), wcsncat);
+
+-extern __always_inline wchar_t *
++__extern_always_inline wchar_t *
+ __NTH (wcsncat (wchar_t *__dest, __const wchar_t *__src, size_t __n))
+ {
+   if (__bos (__dest) != (size_t) -1)
+@@ -246,7 +246,7 @@ extern wchar_t *__REDIRECT (__fgetws_alias,
+ 			    (wchar_t *__restrict __s, int __n,
+ 			     __FILE *__restrict __stream), fgetws) __wur;
+
+-extern __always_inline __wur wchar_t *
++__extern_always_inline __wur wchar_t *
+ fgetws (wchar_t *__restrict __s, int __n, __FILE *__restrict __stream)
+ {
+   if (__bos (__s) != (size_t) -1
+@@ -264,7 +264,7 @@ extern wchar_t *__REDIRECT (__fgetws_unlocked_alias,
+ 			     __FILE *__restrict __stream), fgetws_unlocked)
+   __wur;
+
+-extern __always_inline __wur wchar_t *
++__extern_always_inline __wur wchar_t *
+ fgetws_unlocked (wchar_t *__restrict __s, int __n, __FILE *__restrict __stream)
+ {
+   if (__bos (__s) != (size_t) -1
+@@ -281,7 +281,7 @@ extern size_t __REDIRECT_NTH (__wcrtomb_alias,
+ 			      (char *__restrict __s, wchar_t __wchar,
+ 			       mbstate_t *__restrict __ps), wcrtomb) __wur;
+
+-extern __always_inline __wur size_t
++__extern_always_inline __wur size_t
+ __NTH (wcrtomb (char *__s, wchar_t __wchar, mbstate_t *__ps))
+ {
+   /* We would have to include <limits.h> to get a definition of MB_LEN_MAX.
+@@ -307,7 +307,7 @@ extern size_t __REDIRECT_NTH (__mbsrtowcs_alias,
+ 			       size_t __len, mbstate_t *__restrict __ps),
+ 			      mbsrtowcs);
+
+-extern __always_inline size_t
++__extern_always_inline size_t
+ __NTH (mbsrtowcs (wchar_t *__restrict __dst, __const char **__restrict __src,
+ 		  size_t __len, mbstate_t *__restrict __ps))
+ {
+@@ -330,7 +330,7 @@ extern size_t __REDIRECT_NTH (__wcsrtombs_alias,
+ 			       size_t __len, mbstate_t *__restrict __ps),
+ 			      wcsrtombs);
+
+-extern __always_inline size_t
++__extern_always_inline size_t
+ __NTH (wcsrtombs (char *__restrict __dst, __const wchar_t **__restrict __src,
+ 		  size_t __len, mbstate_t *__restrict __ps))
+ {
+@@ -352,7 +352,7 @@ extern size_t __REDIRECT_NTH (__mbsnrtowcs_alias,
+ 			       size_t __len, mbstate_t *__restrict __ps),
+ 			      mbsnrtowcs);
+
+-extern __always_inline size_t
++__extern_always_inline size_t
+ __NTH (mbsnrtowcs (wchar_t *__restrict __dst, __const char **__restrict __src,
+ 		   size_t __nmc, size_t __len, mbstate_t *__restrict __ps))
+ {
+@@ -376,7 +376,7 @@ extern size_t __REDIRECT_NTH (__wcsnrtombs_alias,
+ 			       size_t __nwc, size_t __len,
+ 			       mbstate_t *__restrict __ps), wcsnrtombs);
+
+-extern __always_inline size_t
++__extern_always_inline size_t
+ __NTH (wcsnrtombs (char *__restrict __dst, __const wchar_t **__restrict __src,
+ 		   size_t __nwc, size_t __len, mbstate_t *__restrict __ps))
+ {
+diff --git a/wcsmbs/wchar.h b/wcsmbs/wchar.h
+index f54abfaa96..7c43b24274 100644
+--- a/wcsmbs/wchar.h
++++ b/wcsmbs/wchar.h
+@@ -326,19 +326,19 @@ __END_NAMESPACE_C99
+    locales must use ASCII encoding for the values in the ASCII range
+    and because the wchar_t encoding is always ISO 10646.  */
+ extern wint_t __btowc_alias (int __c) __asm ("btowc");
+-extern __inline wint_t
++__extern_inline wint_t
+ __NTH (btowc (int __c))
+ { return (__builtin_constant_p (__c) && __c >= '\0' && __c <= '\x7f'
+ 	  ? (wint_t) __c : __btowc_alias (__c)); }
+
+ extern int __wctob_alias (wint_t __c) __asm ("wctob");
+-extern __inline int
++__extern_inline int
+ __NTH (wctob (wint_t __wc))
+ { return (__builtin_constant_p (__wc) && __wc >= L'\0' && __wc <= L'\x7f'
+ 	  ? (int) __wc : __wctob_alias (__wc)); }
+ # endif
+
+-extern __inline size_t
++__extern_inline size_t
+ __NTH (mbrlen (__const char *__restrict __s, size_t __n,
+ 	       mbstate_t *__restrict __ps))
+ { return (__ps != NULL
+@@ -548,38 +548,38 @@ extern unsigned long long int __wcstoull_internal (__const wchar_t *
+ /* Define inline functions which call the internal entry points.  */
+ __BEGIN_NAMESPACE_C99
+
+-extern __inline double
++__extern_inline double
+ __NTH (wcstod (__const wchar_t *__restrict __nptr,
+ 	       wchar_t **__restrict __endptr))
+ { return __wcstod_internal (__nptr, __endptr, 0); }
+-extern __inline long int
++__extern_inline long int
+ __NTH (wcstol (__const wchar_t *__restrict __nptr,
+ 	       wchar_t **__restrict __endptr, int __base))
+ { return __wcstol_internal (__nptr, __endptr, __base, 0); }
+-extern __inline unsigned long int
++__extern_inline unsigned long int
+ __NTH (wcstoul (__const wchar_t *__restrict __nptr,
+ 		wchar_t **__restrict __endptr, int __base))
+ { return __wcstoul_internal (__nptr, __endptr, __base, 0); }
+ __END_NAMESPACE_C99
+
+ # ifdef __USE_GNU
+-extern __inline float
++__extern_inline float
+ __NTH (wcstof (__const wchar_t *__restrict __nptr,
+ 	       wchar_t **__restrict __endptr))
+ { return __wcstof_internal (__nptr, __endptr, 0); }
+ #  ifndef __LDBL_COMPAT
+-extern __inline long double
++__extern_inline long double
+ __NTH (wcstold (__const wchar_t *__restrict __nptr,
+ 		wchar_t **__restrict __endptr))
+ { return __wcstold_internal (__nptr, __endptr, 0); }
+ #  endif
+ __extension__
+-extern __inline long long int
++__extern_inline long long int
+ __NTH (wcstoq (__const wchar_t *__restrict __nptr,
+ 	       wchar_t **__restrict __endptr, int __base))
+ { return __wcstoll_internal (__nptr, __endptr, __base, 0); }
+ __extension__
+-extern __inline unsigned long long int
++__extern_inline unsigned long long int
+ __NTH (wcstouq (__const wchar_t *__restrict __nptr,
+ 		wchar_t **__restrict __endptr, int __base))
+ { return __wcstoull_internal (__nptr, __endptr, __base, 0); }

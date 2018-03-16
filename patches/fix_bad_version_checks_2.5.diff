@@ -1,0 +1,104 @@
+diff --git a/configure b/configure
+index d14f89a8a9..49f79a5ae2 100755
+--- a/configure
++++ b/configure
+@@ -4040,13 +4040,13 @@ else
+   echo "$as_me:$LINENO: checking version of $AS" >&5
+ echo $ECHO_N "checking version of $AS... $ECHO_C" >&6
+   ac_prog_version=`$AS --version 2>&1 | sed -n 's/^.*GNU assembler.* \([0-9]*\.[0-9.]*\).*$/\1/p'`
+-  case $ac_prog_version in
+-    '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
+-    2.1[3-9]*)
+-       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
+-    *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
++  #case $ac_prog_version in
++    #'') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
++    #2.1[3-9]*)
++       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no #;;
++    #*) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
+ 
+-  esac
++  #esac
+   echo "$as_me:$LINENO: result: $ac_prog_version" >&5
+ echo "${ECHO_T}$ac_prog_version" >&6
+ fi
+@@ -4101,13 +4101,13 @@ else
+   echo "$as_me:$LINENO: checking version of $LD" >&5
+ echo $ECHO_N "checking version of $LD... $ECHO_C" >&6
+   ac_prog_version=`$LD --version 2>&1 | sed -n 's/^.*GNU ld.* \([0-9][0-9]*\.[0-9.]*\).*$/\1/p'`
+-  case $ac_prog_version in
+-    '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
+-    2.1[3-9]*)
+-       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
+-    *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
++  #case $ac_prog_version in
++    #'') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
++    #2.1[3-9]*)
++       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no #;;
++    #*) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
+ 
+-  esac
++  #esac
+   echo "$as_me:$LINENO: result: $ac_prog_version" >&5
+ echo "${ECHO_T}$ac_prog_version" >&6
+ fi
+@@ -4216,13 +4216,13 @@ else
+   echo "$as_me:$LINENO: checking version of $CC" >&5
+ echo $ECHO_N "checking version of $CC... $ECHO_C" >&6
+   ac_prog_version=`$CC -v 2>&1 | sed -n 's/^.*version \([egcygnustpi-]*[0-9.]*\).*$/\1/p'`
+-  case $ac_prog_version in
+-    '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
+-    3.4* | 4.[0-9]* )
+-       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
+-    *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
++  #case $ac_prog_version in
++    #'') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
++    #3.4* | 4.[0-9]* )
++       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no #;;
++    #*) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
+ 
+-  esac
++  #esac
+   echo "$as_me:$LINENO: result: $ac_prog_version" >&5
+ echo "${ECHO_T}$ac_prog_version" >&6
+ fi
+@@ -4277,13 +4277,13 @@ else
+   echo "$as_me:$LINENO: checking version of $MAKE" >&5
+ echo $ECHO_N "checking version of $MAKE... $ECHO_C" >&6
+   ac_prog_version=`$MAKE --version 2>&1 | sed -n 's/^.*GNU Make[^0-9]*\([0-9][0-9.]*\).*$/\1/p'`
+-  case $ac_prog_version in
+-    '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
+-    3.79* | 3.[89]*)
+-       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
+-    *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
++  #case $ac_prog_version in
++  #  '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
++  #  3.79* | 3.[89]*)
++       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no #;;
++  #  *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
+ 
+-  esac
++  #esac
+   echo "$as_me:$LINENO: result: $ac_prog_version" >&5
+ echo "${ECHO_T}$ac_prog_version" >&6
+ fi
+@@ -4461,13 +4461,13 @@ else
+   echo "$as_me:$LINENO: checking version of $SED" >&5
+ echo $ECHO_N "checking version of $SED... $ECHO_C" >&6
+   ac_prog_version=`$SED --version 2>&1 | sed -n 's/^.*GNU sed version \([0-9]*\.[0-9.]*\).*$/\1/p'`
+-  case $ac_prog_version in
+-    '') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
+-    3.0[2-9]*|3.[1-9]*|[4-9]*)
+-       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no;;
+-    *) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
++  #case $ac_prog_version in
++    #'') ac_prog_version="v. ?.??, bad"; ac_verc_fail=yes;;
++    #3.0[2-9]*|3.[1-9]*|[4-9]*)
++       ac_prog_version="$ac_prog_version, ok"; ac_verc_fail=no #;;
++    #*) ac_prog_version="$ac_prog_version, bad"; ac_verc_fail=yes;;
+ 
+-  esac
++  #esac
+   echo "$as_me:$LINENO: result: $ac_prog_version" >&5
+ echo "${ECHO_T}$ac_prog_version" >&6
+ fi
