@@ -1,5 +1,5 @@
 # Glibc version header generator
-Build portable linux binaries, no more linker errors on user's older machines from incompatible glibc versions.
+Build portable linux binaries, no more linker errors on users'older machines from incompatible glibc versions.
 
 # What is this?
 Essentially, this is a tool that allows you to specify the glibc version that you want to link against, regardless of what version is installed on your machine.
@@ -33,7 +33,7 @@ This is as simple as adding `-include /path/to/glibc_version_header.h` to your c
 ## Does that actually work?
 Yup, you just need to make sure all the binaries you're distributing are built with the magic header.
 I've built gcc and binutils with this technique on debian 9 (glibc 2.24), and then run it successfully on ubuntu 12.04 (glibc 2.15).
-It's worked out of the box for everything I've tried except building gcc itself, which required a little bit of messing, because it uses every obscure platform feature under the sun, many of which seem to have been invented almost for it's sole use.
+It's worked out of the box for everything I've tried except building gcc itself, which required a little bit of messing, because it uses every obscure platform feature under the sun, many of which seem to have been invented almost for its sole use.
 
 # Caveats
 It pretty much works out of the box for almost everything.
@@ -61,5 +61,15 @@ I would also recommend adding `-static-libgcc -static-libstdc++` as well.
 # What glibc version should I use then?
 Depends on who you want to target. The oldest supported version is glibc 2.5, which was released in 2006. That's probably ancient enough.
 
-
-
+See the chart below for glibc versions found on common Linux distributions:
+ 
+| Distribution | glibc version |
+|--------------|---------------|
+| Debian 7     | 2.13          |
+| Debian 8     | 2.19          |
+| Debian 9     | 2.24          |
+| CentOS 6     | 2.12          |
+| CentOS 7     | 2.17          |
+| Ubuntu 14.04 | 2.19          |
+| Ubuntu 16.04 | 2.23          |
+| Ubuntu 18.04 | 2.27          |
