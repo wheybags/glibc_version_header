@@ -36,7 +36,9 @@ I've built gcc and binutils with this technique on debian 9 (glibc 2.24), and th
 It's worked out of the box for everything I've tried except building gcc itself, which required a little bit of messing, because it uses every obscure platform feature under the sun, many of which seem to have been invented almost for its sole use.
 
 # Caveats
-It pretty much works out of the box for almost everything.
+It pretty much works out of the box for almost everything in plain c.
+- If you want c++, you'll need to build libstdc++ with this enabled. That can be a little involved, but I'm working on a solution, to be available "soon".
+- So far, this work on x86_64 code only.
 - Weak symbols don't work, you'll need to remove the entries for the functions you want weak references to. Almost noone uses them, however, so you're probably fine.
 - pthreads functions using wrong versions: If you use pthreads, you must use the -pthread flag, not -lpthread. You should be doing this anyway, however, so you're probably fine.
   -lpthread just adds libpthread.so to your link flags, but the proper way is -pthread, which also defines the `_REENTRANT` flag, which lets the build _know_ it's going to be linked to libpthread.so. This is important since libc has this horrible feature that pthreads functions are in libpthread.so, while the normal cstdlib functions are in libc6.so. However, a subset of pthreads functions are exposed in libc6.so as weak symbols, with noop implementations. This allows them to do a single compile of libc6.so, with appropriate locking calls added in to ensure thread safety where it should be ensured, but if you're not using threads (read - didn't link libpthread.so), the locking calls are noops. 
