@@ -7,6 +7,7 @@ import distutils.spawn
 import copy
 import shutil
 import multiprocessing
+import argparse
 
 basePath = os.path.dirname(os.path.realpath(__file__))
 
@@ -173,7 +174,7 @@ def apply_patches(glibcDir, version):
             subprocess.check_call(["git", "apply", patch_path], cwd=glibcDir)
 
 
-def get_glibc_binaries(version):
+def get_glibc_binaries(version, arch):
     """
     Downloads and builds the specified version (git tag) of glibc.
     Returns the installed folder.
@@ -201,16 +202,37 @@ def get_glibc_binaries(version):
             shutil.rmtree(installDir)
         os.makedirs(installDir)
 
+        def add_flags(env, name, value):
+            if name in env:
+                env[name] += ' ' + value
+            else:
+                env[name] = value
+            return env
+
         env = copy.deepcopy(os.environ)
         env["CC"] = "gcc"
         if Version(2, 5) <= version <= Version(2, 16):
-            env["CFLAGS"] = "-U_FORTIFY_SOURCE -O2 -fno-stack-protector"
+            env = add_flags(env, "CFLAGS", "-U_FORTIFY_SOURCE -O2 -fno-stack-protector")
         if Version(2, 5) <= version <= Version(2, 21):
-            env["LDFLAGS"] = "-no-pie"
+            env = add_flags(env, "LDFLAGS", "-no-pie")
 
         jobString = "-j" + str(multiprocessing.cpu_count())
 
-        subprocess.check_call([glibcDir + "/configure", "--disable-werror", "--disable-sanity-checks"], cwd=buildDir, env=env)
+        configure_args = [glibcDir + "/configure", "--disable-werror", "--disable-sanity-checks"]
+
+        if arch == 'x86':
+            env["CC"] = "gcc -m32"
+            env = add_flags(env, "CFLAGS", "-m32 -march=i686")
+            env = add_flags(env, "LDFLAGS", "-m32 -march=i686")
+
+            config_guess = subprocess.check_output([os.path.join(glibcDir, 'scripts', 'config.guess')]).decode()
+            # http://www.linuxfromscratch.org/lfs/view/jh/chapter05/glibc.html
+            configure_args.extend(['--host=i686-linux-gnu',
+                                   '--build=%s' % config_guess,
+                                   'libc_cv_forced_unwind=yes',
+                                   'libc_cv_ctors_header=yes',
+                                   'libc_cv_c_cleanup=yes'])
+        subprocess.check_call(configure_args, cwd=buildDir, env=env)
         subprocess.check_call(["make", jobString], cwd=buildDir)
         subprocess.check_call(["make", "install_root=" + installDir, "install", jobString], cwd=buildDir)
 
@@ -314,9 +336,16 @@ SUPPORTED_VERSIONS = [
 def main():
     check_have_required_programs()
 
-    if len(sys.argv) > 1:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', '--version', type=str, help='compile only specific glibc version', action='append',
+                        choices=[v.version_as_str() for v in SUPPORTED_VERSIONS])
+    parser.add_argument('-a', '--arch', type=str, help='compile for specific processor architecture',
+                        choices=['x86', 'x64'], default='x64')
+    args = parser.parse_args()
+
+    if args.version:
         print("Warning, requesting specific versions may mean you miss out on defining missing symbols")
-        requested_versions = [Version(*v.split('.')) for v in sys.argv[1:]]
+        requested_versions = [Version(*v.split('.')) for v in args.version]
     else:
         requested_versions = SUPPORTED_VERSIONS  # build all by default
 
@@ -327,7 +356,7 @@ def main():
     syms = {}
     for version in requested_versions:
         print("generating data for version:", version)
-        installDir = get_glibc_binaries(version)
+        installDir = get_glibc_binaries(version, args.arch)
         syms[version] = extract_versions_from_installed_folder(installDir, version)
 
     allsyms = set.union(set(), *syms.values())
