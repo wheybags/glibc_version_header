@@ -213,7 +213,7 @@ def get_glibc_binaries(version):
 
 
 def check_have_required_programs():
-    requiredPrograms = ["gcc", "make", "git", "readelf", "grep"]
+    requiredPrograms = ["gcc", "make", "git", "readelf", "grep", "gawk", "bison", "msgfmt", "makeinfo", "autoconf"]
 
     missing = []
 
