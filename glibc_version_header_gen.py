@@ -10,8 +10,10 @@ import multiprocessing
 
 basePath = os.path.dirname(os.path.realpath(__file__))
 
+
 def extract_versions_from_installed_folder(folder, version):
-    files = [x.decode("utf-8").strip() for x in subprocess.check_output("find '" + folder + "' -name \"*.so\"", shell=True).split()]
+    files = [x.decode("utf-8").strip() for x in subprocess.check_output("find '" + folder + "' -name \"*.so\"",
+                                                                        shell=True).split()]
 
     def starts_with_any(str, set):
         for item in set:
@@ -31,17 +33,19 @@ def extract_versions_from_installed_folder(folder, version):
         # default version.
         # See https://web.archive.org/web/20170124195801/https://www.akkadia.org/drepper/symbol-versioning section Static Linker
         command = "readelf -Ws '" + f + "' | grep \" [^ ]*@@GLIBC_[0-9.]*$\" -o"
-        file_data = [x.decode("utf-8").strip() for x in subprocess.check_output(['/bin/bash', '-c', 'set -o pipefail; ' + command]).split()]
+        file_data = [x.decode("utf-8").strip() for x in
+                     subprocess.check_output(['/bin/bash', '-c', 'set -o pipefail; ' + command]).split()]
 
         if Version(2, 17) <= version <= Version(2, 27):
             # These are defined in both librt and libc, at different versions. file rt/Versions in
             # glibc source refers to them being moved from librt to libc,
             # but left behind for backwards compatibility
             if f.split("/")[-1].startswith("librt"):
-                file_data = [x for x in file_data if not starts_with_any(x, {'clock_getcpuclockid', 'clock_nanosleep', 'clock_getres', 'clock_settime', 'clock_gettime'})]
+                file_data = [x for x in file_data if not starts_with_any(x, {'clock_getcpuclockid', 'clock_nanosleep',
+                                                                             'clock_getres', 'clock_settime',
+                                                                             'clock_gettime'})]
 
         data += file_data
-
 
     syms = {}
     dupes = []
@@ -58,6 +62,7 @@ def extract_versions_from_installed_folder(folder, version):
         raise Exception("duplicate incompatible symbol versions found: " + str(dupes))
 
     return syms
+
 
 def generate_header_string(syms, missingFuncs):
     pthread_funcs_in_libc_so = {
@@ -126,7 +131,8 @@ def generate_header_string(syms, missingFuncs):
     for sym in sorted(syms.keys()):
         line = '__asm__(".symver ' + sym + ',' + sym + '@' + syms[sym] + '");'
 
-        if sym in pthread_funcs_in_libc_so or sym in pthread_symbols_used_as_weak_in_libstdcpp or sym in pthread_symbols_used_as_weak_in_libgcc:
+        if sym in pthread_funcs_in_libc_so or sym in pthread_symbols_used_as_weak_in_libstdcpp or sym in \
+                pthread_symbols_used_as_weak_in_libgcc:
             line = "#ifdef _REENTRANT\n" + line + "\n#endif"
         if sym in pthread_symbols_used_as_weak_in_libgcc:
             line = "#ifndef IN_LIBGCC2\n" + line + "\n#endif"
@@ -136,12 +142,14 @@ def generate_header_string(syms, missingFuncs):
         strings.append(line)
 
     for sym in sorted(list(missingFuncs)):
-        strings.append('__asm__(".symver ' + sym + ',' + sym + '@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");')
+        strings.append(
+            '__asm__(".symver ' + sym + ',' + sym + '@GLIBC_WRAP_ERROR_SYMBOL_NOT_PRESENT_IN_REQUESTED_VERSION");')
 
     strings.append("#endif")
     strings.append("")
 
     return "\n".join(strings)
+
 
 def apply_patches(glibcDir, version):
     patches_table = {
@@ -223,6 +231,7 @@ def check_have_required_programs():
 
     if missing:
         raise Exception("missing programs: " + str(missing) + ", please install via your os package manager")
+
 
 class Version(object):
     def __init__(self, *args):
@@ -309,7 +318,7 @@ def main():
         print("Warning, requesting specific versions may mean you miss out on defining missing symbols")
         requested_versions = [Version(*v.split('.')) for v in sys.argv[1:]]
     else:
-        requested_versions = SUPPORTED_VERSIONS # build all by default
+        requested_versions = SUPPORTED_VERSIONS  # build all by default
 
     versionHeadersPath = basePath + "/version_headers"
     if os.path.exists(versionHeadersPath):
@@ -332,6 +341,7 @@ def main():
 
         with open(versionHeadersPath + "/force_link_glibc_" + version.version_as_str() + ".h", 'w') as f:
             f.write(headerData)
+
 
 if __name__ == "__main__":
     main()
