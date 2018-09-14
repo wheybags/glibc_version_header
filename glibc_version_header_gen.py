@@ -234,6 +234,8 @@ def get_glibc_binaries(version, arch):
                                    'libc_cv_forced_unwind=yes',
                                    'libc_cv_ctors_header=yes',
                                    'libc_cv_c_cleanup=yes'])
+            # -jN fails with "cannot create glibc-2.12.2/build/iconvdata/stamp.oS: File exists"
+            jobString = "-j1"
         subprocess.check_call(configure_args, cwd=buildDir, env=env)
         subprocess.check_call(["make", jobString], cwd=buildDir)
         subprocess.check_call(["make", "install_root=" + installDir, "install", jobString], cwd=buildDir)
