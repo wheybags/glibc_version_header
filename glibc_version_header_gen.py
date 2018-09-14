@@ -214,7 +214,9 @@ def get_glibc_binaries(version, arch):
         if Version(2, 5) <= version <= Version(2, 16):
             env = add_flags(env, "CFLAGS", "-U_FORTIFY_SOURCE -O2 -fno-stack-protector")
         if Version(2, 5) <= version <= Version(2, 21):
-            env = add_flags(env, "LDFLAGS", "-no-pie")
+            gcc_flags = subprocess.check_output(['gcc', '-v'], stderr=subprocess.STDOUT).decode()
+            if '--enable-default-pie' in gcc_flags:
+                env = add_flags(env, "LDFLAGS", "-no-pie")
 
         jobString = "-j" + str(multiprocessing.cpu_count())
 
