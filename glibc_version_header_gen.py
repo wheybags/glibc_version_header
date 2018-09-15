@@ -23,6 +23,9 @@ def extract_versions_from_installed_folder(folder, version):
         return False
 
     data = []
+    syms = {}
+    syms_file = {}
+    dupes = {}
     for f in files:
 
         # These are linker scripts that just forward to other .sos, not actual elf binaries
@@ -46,18 +49,17 @@ def extract_versions_from_installed_folder(folder, version):
                                                                              'clock_getres', 'clock_settime',
                                                                              'clock_gettime'})]
 
-        data += file_data
-
-    syms = {}
-    dupes = []
-
-    for line in data:
-        sym, ver = line.split("@@")
-
-        if sym not in syms:
-            syms[sym] = ver
-        elif syms[sym] != ver:
-            dupes.append(line)
+        basename = os.path.basename(f)
+        for line in file_data:
+            sym, ver = line.split("@@")
+            if sym not in syms:
+                syms[sym] = ver
+                syms_file[sym] = basename
+            elif syms[sym] != ver:
+                if sym not in dupes:
+                    dupes[sym] = (basename, syms_file[sym])
+                else:
+                    dupes[sym].append(basename)
 
     if dupes:
         raise Exception("duplicate incompatible symbol versions found: " + str(dupes))
