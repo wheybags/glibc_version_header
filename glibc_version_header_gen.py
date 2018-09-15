@@ -59,7 +59,7 @@ def extract_versions_from_installed_folder(folder, version):
                 if sym not in dupes:
                     dupes[sym] = (basename, syms_file[sym])
                 else:
-                    dupes[sym].append(basename)
+                    dupes[sym] += (basename,)
 
     if dupes:
         raise Exception("duplicate incompatible symbol versions found: " + str(dupes))
