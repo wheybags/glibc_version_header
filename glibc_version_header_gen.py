@@ -226,7 +226,7 @@ def get_glibc_binaries(version, arch):
 
         if arch == 'x86':
             env["CC"] = "gcc -m32"
-            env = add_flags(env, "CFLAGS", "-m32 -march=i686")
+            env = add_flags(env, "CFLAGS", "-m32 -march=i686 -O2")
             env = add_flags(env, "LDFLAGS", "-m32 -march=i686")
 
             config_guess = subprocess.check_output([os.path.join(glibcDir, 'scripts', 'config.guess')]).decode()
