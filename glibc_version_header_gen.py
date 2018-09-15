@@ -154,7 +154,7 @@ def generate_header_string(syms, missingFuncs):
     return "\n".join(strings)
 
 
-def apply_patches(glibcDir, version):
+def apply_patches(glibcDir, version, arch):
     patches_table = {
         # patch                              x <= version <= y
         "extern_inline_addition.diff":      (Version(2,  5), Version(2, 5, 1)),
@@ -169,11 +169,19 @@ def apply_patches(glibcDir, version):
         "hvsep-remove.diff":                (Version(2, 16), Version(2, 16)),
         "cvs-common-symbols.diff":          (Version(2, 23), Version(2, 25)),
     }
+    patches_x86_table = {
+        "unwind.diff":                      (Version(2,  5), Version(2, 10, 2)),
+    }
 
-    for patch, v_limits in patches_table.items():
-        if v_limits[0] <= version <= v_limits[1]:
-            patch_path = "{}/patches/{}".format(basePath, patch)
-            subprocess.check_call(["git", "apply", patch_path], cwd=glibcDir)
+    def apply_patches_from_table(glibcDir, version, table):
+        for patch, v_limits in table.items():
+            if v_limits[0] <= version <= v_limits[1]:
+                patch_path = "{}/patches/{}".format(basePath, patch)
+                subprocess.check_call(["git", "apply", patch_path], cwd=glibcDir)
+
+    apply_patches_from_table(glibcDir, version, patches_table)
+    if arch == 'x86':
+        apply_patches_from_table(glibcDir, version, patches_x86_table)
 
 
 def get_glibc_binaries(version, arch):
@@ -194,7 +202,7 @@ def get_glibc_binaries(version, arch):
 
         subprocess.check_call(["git", "checkout", str(version)], cwd=glibcDir)
 
-        apply_patches(glibcDir, version)
+        apply_patches(glibcDir, version, arch)
 
         if os.path.exists(buildDir):
             shutil.rmtree(buildDir)
