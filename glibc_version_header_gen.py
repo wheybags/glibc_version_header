@@ -363,7 +363,7 @@ def main():
     else:
         requested_versions = SUPPORTED_VERSIONS  # build all by default
 
-    versionHeadersPath = basePath + "/version_headers"
+    versionHeadersPath = os.path.join(basePath, "version_headers", args.arch)
     if os.path.exists(versionHeadersPath):
         shutil.rmtree(versionHeadersPath)
 
