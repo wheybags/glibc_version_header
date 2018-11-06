@@ -233,7 +233,7 @@ def get_glibc_binaries(version, arch):
         configure_args = [glibcDir + "/configure", "--disable-werror", "--disable-sanity-checks"]
 
         if arch == 'x86':
-            env["CC"] = "gcc -m32"
+            env["CC"] = "gcc -m32 -U__i686"
             env = add_flags(env, "CFLAGS", "-m32 -march=i686 -O2")
             env = add_flags(env, "LDFLAGS", "-m32 -march=i686")
 
