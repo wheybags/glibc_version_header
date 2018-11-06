@@ -181,6 +181,7 @@ def apply_patches(glibcDir, version, arch):
     }
     patches_x86_table = {
         "unwind.diff":                      (Version(2,  5), Version(2, 10, 2)),
+        "cvs-short-for-fnstsw.diff":        (Version(2,  5), Version(2, 7)),
     }
 
     def apply_patches_from_table(glibcDir, version, table):
