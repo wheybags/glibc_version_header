@@ -12,7 +12,7 @@ import argparse
 basePath = os.path.dirname(os.path.realpath(__file__))
 
 
-def extract_versions_from_installed_folder(folder, version):
+def extract_versions_from_installed_folder(folder, version, arch):
     files = [x.decode("utf-8").strip() for x in subprocess.check_output("find '" + folder + "' -name \"*.so\"",
                                                                         shell=True).split()]
 
@@ -40,14 +40,24 @@ def extract_versions_from_installed_folder(folder, version):
         file_data = [x.decode("utf-8").strip() for x in
                      subprocess.check_output(['/bin/bash', '-c', 'set -o pipefail; ' + command]).split()]
 
+        library_name = f.split("/")[-1]
         if Version(2, 17) <= version <= Version(2, 27):
             # These are defined in both librt and libc, at different versions. file rt/Versions in
             # glibc source refers to them being moved from librt to libc,
             # but left behind for backwards compatibility
-            if f.split("/")[-1].startswith("librt"):
+            if library_name.startswith("librt"):
                 file_data = [x for x in file_data if not starts_with_any(x, {'clock_getcpuclockid', 'clock_nanosleep',
                                                                              'clock_getres', 'clock_settime',
                                                                              'clock_gettime'})]
+
+        if arch == 'x86':
+            if library_name.startswith("libc") or library_name.startswith("librt") or library_name.startswith("libnsl"):
+                file_data = [x for x in file_data if not starts_with_any(x, {'pread', 'pread64', '__pread64',
+                                                                             'pwrite', 'pwrite64', '__pwrite64',
+                                                                             'open64',
+                                                                             'lseek64',
+                                                                             '__finite', '__finitel', '__finitef'})]
+
 
         basename = os.path.basename(f)
         for line in file_data:
@@ -371,7 +381,7 @@ def main():
     for version in requested_versions:
         print("generating data for version:", version)
         installDir = get_glibc_binaries(version, args.arch)
-        syms[version] = extract_versions_from_installed_folder(installDir, version)
+        syms[version] = extract_versions_from_installed_folder(installDir, version, args.arch)
 
     allsyms = set.union(set(), *syms.values())
     for version in requested_versions:
