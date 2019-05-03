@@ -1,0 +1,19 @@
+taken from the trunk:
+
+2008-01-12  H.J. Lu  <hongjiu.lu@intel.com>
+
+        * sysdeps/i386/fpu/ftestexcept.c (fetestexcept): Use short for fnstsw.
+
+diff --git a/sysdeps/i386/fpu/ftestexcept.c b/sysdeps/i386/fpu/ftestexcept.c
+index 9038e04..1979fe1 100644
+--- a/sysdeps/i386/fpu/ftestexcept.c
++++ b/sysdeps/i386/fpu/ftestexcept.c
+@@ -26,7 +26,7 @@
+ int
+ fetestexcept (int excepts)
+ {
+-  int temp;
++  short temp;
+   int xtemp = 0;
+ 
+   /* Get current exceptions.  */
