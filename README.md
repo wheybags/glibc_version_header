@@ -6,7 +6,7 @@ Essentially, this is a tool that allows you to specify the glibc version that yo
 This allows you to make portable Linux binaries, without having to build your binaries on an ancient distro (which is the current standard practice).
 
 # Why would I want that?
-So you can distribute a portable binary to your users. You know how on Windows, you can just download a zip with a program in it, unzip, double click, and the thing runs? Wouldn't it be nice if we could have that on Linux? 
+So you can distribute a portable binary to your users. You know how on Windows, you can just download a zip with a program in it, unzip, double click, and the thing runs? Wouldn't it be nice if we could have that on Linux?
 There's no technical reason we can't, just standard practices that are hostile to this goal.
 My particular interest is using it for binaries of games, but it's useful for all sorts of things.
 
@@ -15,18 +15,18 @@ A statically linked binary doesn't work unless you have the same version of glib
 
 
 # How does it work?
-Glibc uses something called symbol versioning. This means that when you use e.g., `malloc` in your program, the symbol the linker will actually link against is `malloc@GLIBC_YOUR_INSTALLED_VERSION` (actually, it will link to `malloc` from the most recent version of glibc that changed the implementaton of `malloc`, but you get the idea). 
+Glibc uses something called symbol versioning. This means that when you use e.g., `malloc` in your program, the symbol the linker will actually link against is `malloc@GLIBC_YOUR_INSTALLED_VERSION` (actually, it will link to `malloc` from the most recent version of glibc that changed the implementaton of `malloc`, but you get the idea).
 This means that when you run your old program on a newer system, where `malloc` has been changed to, say, take its size as a string instead of an integer, that new crazy `malloc` will be `malloc@GLIBC_CRAZY_VERSION` but you'll still link to `malloc@OLD_SANE_VERSION`, and glibc will keep exporting the old symbol with a compatible implementation.
 This effectively make binaries forward compatible, as the system will always act like the version of glibc on the developers machine when they build the binary.
-The downside of this is that if I compile my super cool, new program on my bleeding edge Arch Linux machine, that binary is almost useless to anyone who isn't cool enough to use the same new version of glibc as me. 
+The downside of this is that if I compile my super cool, new program on my bleeding edge Arch Linux machine, that binary is almost useless to anyone who isn't cool enough to use the same new version of glibc as me.
 I theorise that this is why almost no one ships Linux binaries - it's just too much of a pain in the ass.
 
 However, the version of a function that you link against _can_ be specified.
-The GNU assembler has a "psuedo-op" `.symver SYM,SYM@VERSION`, which forces the linker to use `SYM@VERSION` wherever you ask for `SYM`. 
+The GNU assembler has a "psuedo-op" `.symver SYM,SYM@VERSION`, which forces the linker to use `SYM@VERSION` wherever you ask for `SYM`.
 This can be embedded in C source like so: `__asm__(".symver SYM,SYM@GLIBC_VERSION");`.
 Great, but I want to use glibc 2.13 for my whole program, not just one function in one translation unit.
 So, what we do to resolve this, is we generate a header file that contains these symver asm blocks for every symbol exposed by glibc.
-To do this, we build every version of glibc from 2.5 to current (open an issue if the latest version is no longer current please), check what symbols are exposed in all the binaries built by that version (glibc splits the C standard library into a few different binaries), and generate the header accordingly. 
+To do this, we build every version of glibc from 2.5 to current (open an issue if the latest version is no longer current please), check what symbols are exposed in all the binaries built by that version (glibc splits the C standard library into a few different binaries), and generate the header accordingly.
 Then, all you need to do is make sure that header is included in every translation unit in your build.
 This is as simple as adding `-include /path/to/glibc_version_header.h` to your compiler flags using whatever build system you use.
 
@@ -44,12 +44,17 @@ It pretty much works out of the box for almost everything in plain C.
   `-lpthread` just adds libpthread.so to your link flags, but the proper way is `-pthread`, which also defines the `_REENTRANT` flag, which lets the build _know_ it's going to be linked to libpthread.so. This is important since libc has this horrible feature that pthreads functions are in libpthread.so, while the normal cstdlib functions are in libc6.so. However, a subset of pthreads functions are exposed in libc6.so as weak symbols, with noop implementations. This allows them to do a single compile of libc6.so, with appropriate locking calls added in to ensure thread safety where it should be ensured, but if you're not using threads (read: didn't link libpthread.so), the locking calls are noops. Because weak symbols don't work with this scheme, this messes up the link, so we only add the magic symver directives for these pthreads functions if `_REENTRANT` is defined.
 
 # Usage
+
+#### CMake
+
 Just grab one of the [generated headers](version_headers), and add it to your compile flags.
 In CMake, this would be:
 ```cmake
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -include /path/to/header.h")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -include /path/to/header.h")
 ```
+
+#### Autotools
 
 For Autotools, just set your env vars:
 ```bash
@@ -59,11 +64,59 @@ export CXXFLAGS="$CXXFLAGS -include /path/to/header.h"
 
 I would also recommend adding `-static-libgcc -static-libstdc++` as well.
 
+#### Nim
+
+```nim
+{. passC: "-include  /path/to/header.h" .}
+```
+
+- For [Nim lang](https://nim-lang.org), you can just use a [PassC Pragma](https://nim-lang.org/docs/manual.html#implementation-specific-pragmas-passc-pragma) with the include to the header file.
+
+You can rename the `*.h` file if you want, it will still work Ok, the `*.h` file can be anywhere on the filesystem.
+
+To compile your Nim code, just compile as normally `nim c -r file.nim`,
+you can also try the `--listCmd` command line parameter to confirm the pragma is working on the GCC command.
+
+Lets say you want to link against [the oldest supported Glibc](https://github.com/wheybags/glibc_version_header/blob/master/version_headers/x64/force_link_glibc_2.5.h), the code should be like:
+
+```nim
+{. passC: "-include  /path/to/force_link_glibc_2_5.h" .}
+```
+
+Alternatively you can use the `--passC` command line parameter like:
+
+```bash
+nim c -r --passC:"-include force_link_glibc_2_5.h" --listCmd file.nim
+```
+
+You dont need the [PassC Pragma](https://nim-lang.org/docs/manual.html#implementation-specific-pragmas-passc-pragma) if you use `--passC` on the command line.
+
+Nim "Hello World" example linking to Glibc Version 2.5:
+
+```nim
+{. passC: "-include force_link_glibc_2_5.h" .}
+echo "Hello World"
+```
+
+
+#### ldd
+
+How to check the Glibc Version my binary links to?.
+
+```bash
+ldd -r -v mybinary
+```
+
+Check the output, search for the Glibc Version on `libc.so`,
+it should change from something like `libc.so.6 (GLIBC_2.14) => /usr/lib/libc.so.6`
+to `libc.so.6 (GLIBC_2.5) => /usr/lib/libc.so.6`
+
+
 # What glibc version should I use then?
 Depends on who you want to target. The oldest supported version is glibc 2.5, which was released in 2006. That's probably ancient enough.
 
 See the chart below for glibc versions found on common Linux distributions:
- 
+
 | Distribution | glibc version |
 |--------------|---------------|
 | Debian 7     | 2.13          |
