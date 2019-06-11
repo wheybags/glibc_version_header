@@ -41,7 +41,7 @@ def extract_versions_from_installed_folder(folder, version, arch):
                      subprocess.check_output(['/bin/bash', '-c', 'set -o pipefail; ' + command]).split()]
 
         library_name = f.split("/")[-1]
-        if Version(2, 17) <= version <= Version(2, 27):
+        if Version(2, 17) <= version <= Version(2, 29):
             # These are defined in both librt and libc, at different versions. file rt/Versions in
             # glibc source refers to them being moved from librt to libc,
             # but left behind for backwards compatibility
@@ -355,6 +355,8 @@ SUPPORTED_VERSIONS = [
     Version(2, 25),
     Version(2, 26),
     Version(2, 27),
+    Version(2, 28),
+    Version(2, 29)
 ]
 
 
