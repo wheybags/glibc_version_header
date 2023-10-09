@@ -2548,7 +2548,7 @@ __asm__(".symver svcudp_create,svcudp_create@GLIBC_2.0");
 __asm__(".symver svcudp_enablecache,svcudp_enablecache@GLIBC_2.0");
 __asm__(".symver svcunix_create,svcunix_create@GLIBC_2.1");
 __asm__(".symver svcunixfd_create,svcunixfd_create@GLIBC_2.1");
-__asm__(".symver swab,swab@GLIBC_2.0");
+__asm__(".symver swap,swap@GLIBC_2.0");
 __asm__(".symver swapcontext,swapcontext@GLIBC_2.1");
 __asm__(".symver swapoff,swapoff@GLIBC_2.0");
 __asm__(".symver swapon,swapon@GLIBC_2.0");
