@@ -64,13 +64,41 @@ Depends on who you want to target. The oldest supported version is glibc 2.5, wh
 
 See the chart below for glibc versions found on common Linux distributions:
  
-| Distribution | glibc version |
-|--------------|---------------|
-| Debian 7     | 2.13          |
-| Debian 8     | 2.19          |
-| Debian 9     | 2.24          |
-| CentOS 6     | 2.12          |
-| CentOS 7     | 2.17          |
-| Ubuntu 14.04 | 2.19          |
-| Ubuntu 16.04 | 2.23          |
-| Ubuntu 18.04 | 2.27          |
+| Distribution    | glibc version |
+|-----------------|---------------|
+| Debian 7        | 2.13          |
+| Debian 8        | 2.19          |
+| Debian 9        | 2.24          |
+| Debian 10       | 2.28          |
+| Debian 11       | 2.31          |
+| Debian 12       | 2.36          |
+| CentOS 6        | 2.12          |
+| CentOS 7        | 2.17          |
+| CentOS 8        | 2.28          |
+| CentOS Stream 8 | 2.28          |
+| CentOS Stream 9 | 2.34          |
+| Fedora 20       | 2.18          |
+| Fedora 21       | 2.20          |
+| Fedora 22       | 2.21          |
+| Fedora 23       | 2.22          |
+| Fedora 24       | 2.23          |
+| Fedora 25       | 2.24          |
+| Fedora 26       | 2.25          |
+| Fedora 27       | 2.26          |
+| Fedora 28       | 2.27          |
+| Fedora 29       | 2.28          |
+| Fedora 30       | 2.29          |
+| Fedora 31       | 2.30          |
+| Fedora 32       | 2.31          |
+| Fedora 33       | 2.32          |
+| Fedora 34       | 2.33          |
+| Fedora 35       | 2.34          |
+| Fedora 36       | 2.35          |
+| Fedora 37       | 2.36          |
+| Fedora 38       | 2.37          |
+| Fedora 39       | 2.38          |
+| Ubuntu 14.04    | 2.19          |
+| Ubuntu 16.04    | 2.23          |
+| Ubuntu 18.04    | 2.27          |
+| Ubuntu 20.04    | 2.31          |
+| Ubuntu 22.04    | 2.35          |
